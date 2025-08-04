@@ -1,0 +1,1008 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StitchPal - Embroidery Stitch Harmony Generator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #fdf7f0;
+            line-height: 1.5;
+        }
+        
+        .container {
+            min-height: 100vh;
+            padding: 1.5rem;
+            max-width: 48rem;
+            margin: 0 auto;
+        }
+        
+        .text-center {
+            text-align: center;
+        }
+        
+        .mb-8 {
+            margin-bottom: 2rem;
+        }
+        
+        .mb-6 {
+            margin-bottom: 1.5rem;
+        }
+        
+        .mb-4 {
+            margin-bottom: 1rem;
+        }
+        
+        .mb-2 {
+            margin-bottom: 0.5rem;
+        }
+        
+        .mt-4 {
+            margin-top: 1rem;
+        }
+        
+        h1 {
+            font-size: 2.25rem;
+            font-weight: bold;
+            color: #7c2d12;
+            margin-bottom: 0.5rem;
+        }
+        
+        .tagline {
+            color: #a8a29e;
+            font-style: italic;
+        }
+        
+        .card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 3px rgba(124, 45, 18, 0.1);
+            border: 1px solid #f5f5f4;
+        }
+        
+        .space-y-4 > * + * {
+            margin-top: 1rem;
+        }
+        
+        .space-y-3 > * + * {
+            margin-top: 0.75rem;
+        }
+        
+        .flex {
+            display: flex;
+        }
+        
+        .items-center {
+            align-items: center;
+        }
+        
+        .justify-center {
+            justify-content: center;
+        }
+        
+        .justify-between {
+            justify-content: space-between;
+        }
+        
+        .gap-2 {
+            gap: 0.5rem;
+        }
+        
+        .gap-3 {
+            gap: 0.75rem;
+        }
+        
+        .gap-4 {
+            gap: 1rem;
+        }
+        
+        .input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid #d6d3d1;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            outline: none;
+            background: white;
+        }
+        
+        .input:focus {
+            border-color: #ea580c;
+            box-shadow: 0 0 0 3px rgba(234, 88, 12, 0.1);
+        }
+        
+        .input.error {
+            border-color: #ef4444;
+        }
+        
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 0.5rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        
+        .btn-primary {
+            background-color: #ea580c;
+            color: white;
+        }
+        
+        .btn-primary:hover:not(:disabled) {
+            background-color: #dc2626;
+        }
+        
+        .btn-secondary {
+            background-color: transparent;
+            color: #78716c;
+            border: 1px solid #d6d3d1;
+        }
+        
+        .btn-secondary:hover {
+            background-color: #fafaf9;
+            color: #57534e;
+        }
+        
+        .btn-small {
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+        }
+        
+        .select {
+            padding: 0.75rem 1rem;
+            border: 1px solid #d6d3d1;
+            border-radius: 0.5rem;
+            background: white;
+            outline: none;
+            width: 100%;
+        }
+        
+        .select:focus {
+            border-color: #ea580c;
+            box-shadow: 0 0 0 3px rgba(234, 88, 12, 0.1);
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+        
+        .palette-container {
+            background: white;
+            border-radius: 0.5rem;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(124, 45, 18, 0.1);
+            border: 1px solid #f5f5f4;
+        }
+        
+        .palette-stitches {
+            display: flex;
+            min-height: 120px;
+            flex-wrap: wrap;
+        }
+        
+        .palette-stitch {
+            flex: 1;
+            min-width: 150px;
+            position: relative;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: linear-gradient(135deg, #fef7ed 0%, #fed7aa 100%);
+            border-right: 1px solid #e7e5e4;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+        
+        .palette-stitch:last-child {
+            border-right: none;
+        }
+        
+        .palette-stitch:hover {
+            background: linear-gradient(135deg, #fed7aa 0%, #fdba74 100%);
+            transform: translateY(-2px);
+            z-index: 10;
+        }
+        
+        .palette-stitch.locked {
+            background: linear-gradient(135deg, #ecfdf5 0%, #bbf7d0 100%);
+        }
+        
+        .palette-stitch.locked:hover {
+            background: linear-gradient(135deg, #bbf7d0 0%, #86efac 100%);
+        }
+        
+        .lock-icon {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            width: 1rem;
+            height: 1rem;
+            background: rgba(0,0,0,0.8);
+            color: white;
+            border-radius: 0.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+        }
+        
+        .stitch-name {
+            font-weight: 600;
+            color: #7c2d12;
+            text-align: center;
+            font-size: 0.875rem;
+            line-height: 1.2;
+        }
+        
+        .stitch-difficulty {
+            position: absolute;
+            bottom: 0.5rem;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(124, 45, 18, 0.9);
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            font-size: 0.75rem;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        
+        .palette-stitch:hover .stitch-difficulty {
+            opacity: 1;
+        }
+        
+        .palette-info {
+            padding: 1rem;
+        }
+        
+        .palette-name {
+            font-weight: 600;
+            color: #7c2d12;
+            margin-bottom: 0.5rem;
+        }
+        
+        .palette-description {
+            color: #78716c;
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+        }
+        
+        .palette-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .font-mono {
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+        }
+        
+        .font-medium {
+            font-weight: 500;
+        }
+        
+        .font-semibold {
+            font-weight: 600;
+        }
+        
+        .text-sm {
+            font-size: 0.875rem;
+        }
+        
+        .text-stone-600 {
+            color: #78716c;
+        }
+        
+        .text-stone-900 {
+            color: #1c1917;
+        }
+        
+        .hidden {
+            display: none !important;
+        }
+        
+        .message-box {
+            margin-top: 1rem;
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .message-success {
+            background-color: #f0fdf4;
+            color: #166534;
+        }
+        
+        .message-error {
+            background-color: #fef2f2;
+            color: #991b1b;
+        }
+        
+        .message-warning {
+            background-color: #fefce8;
+            color: #92400e;
+        }
+        
+        .icon {
+            width: 1rem;
+            height: 1rem;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 2;
+        }
+        
+        .error-text {
+            color: #ef4444;
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+        }
+        
+        .stitch-info {
+            background-color: #fef7ed;
+            border: 1px solid #fed7aa;
+            border-radius: 0.375rem;
+            padding: 0.75rem;
+            margin-top: 0.5rem;
+            font-size: 0.875rem;
+            color: #9a3412;
+        }
+        
+        .stitch-info-name {
+            font-weight: 600;
+            color: #7c2d12;
+        }
+        
+        .stitch-info-details {
+            display: flex;
+            gap: 1rem;
+            margin-top: 0.25rem;
+        }
+        
+        .stitch-info-difficulty {
+            text-transform: capitalize;
+        }
+        
+        .suggestions {
+            background-color: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.375rem;
+            padding: 0.5rem;
+            margin-top: 0.5rem;
+            font-size: 0.75rem;
+            color: #64748b;
+        }
+        
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.875rem;
+            }
+            
+            .container {
+                padding: 1rem;
+            }
+            
+            .card {
+                padding: 1rem;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .stitch-info-details {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+            
+            .palette-stitches {
+                flex-direction: column;
+            }
+            
+            .palette-stitch {
+                min-width: auto;
+                border-right: none;
+                border-bottom: 1px solid #e7e5e4;
+            }
+            
+            .palette-stitch:last-child {
+                border-bottom: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="text-center mb-8">
+            <h1>StitchPal</h1>
+            <p class="tagline">Find perfect embroidery stitch combinations</p>
+        </div>
+
+        <!-- Input Section -->
+        <div class="mb-6 card">
+            <h3 class="font-semibold text-stone-900 mb-4">Dominant Stitch</h3>
+            <div class="mb-4">
+                <div class="flex gap-2">
+                    <input 
+                        type="text" 
+                        id="stitchInput" 
+                        class="input" 
+                        placeholder="e.g., running stitch, backstitch, french knot"
+                        oninput="validateStitch(this.value)"
+                        onkeypress="handleKeyPress(event)"
+                    />
+                </div>
+                <div id="stitchError" class="error-text hidden">
+                    Stitch not found. Try: running stitch, backstitch, french knot, chain stitch, etc.
+                </div>
+                <div id="stitchInfo" class="stitch-info hidden">
+                    <div class="stitch-info-name" id="stitchInfoName"></div>
+                    <div class="stitch-info-details">
+                        <div>Difficulty: <span class="stitch-info-difficulty" id="stitchInfoDifficulty"></span></div>
+                        <div>Type: <span id="stitchInfoType"></span></div>
+                    </div>
+                </div>
+                <div id="suggestions" class="suggestions">
+                    Try: running stitch, backstitch, french knot, chain stitch, blanket stitch, satin stitch, stem stitch, lazy daisy
+                </div>
+            </div>
+            
+            <div class="form-row">
+                <div>
+                    <label class="font-medium text-stone-900 mb-2" style="display: block;">Combination Size</label>
+                    <select class="select" id="paletteSize">
+                        <option value="3" selected>3 stitches</option>
+                        <option value="4">4 stitches</option>
+                        <option value="5">5 stitches</option>
+                        <option value="6">6 stitches</option>
+                    </select>
+                </div>
+                
+                <div>
+                    <label class="font-medium text-stone-900 mb-2" style="display: block;">Harmony Style</label>
+                    <select class="select" id="themeSelect">
+                        <option value="similar">Similar - Same difficulty level</option>
+                        <option value="progressive">Progressive - Building complexity</option>
+                        <option value="mixed">Mixed - Varied difficulties</option>
+                        <option value="complementary">Complementary - Different stitch types</option>
+                        <option value="texture">Texture Harmony - Similar visual texture</option>
+                        <option value="function">Function Based - Same purpose stitches</option>
+                        <option value="traditional">Traditional - Same cultural origins</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Generate Button -->
+        <div class="mb-6 text-center">
+            <button onclick="generateCombination()" class="btn btn-primary" id="generateBtn" disabled>
+                <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                </svg>
+                Generate Combination
+            </button>
+        </div>
+
+        <!-- Results Section -->
+        <div id="resultsSection" class="hidden">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="font-semibold text-stone-900">Generated Combination</h3>
+                <div class="text-sm text-stone-600">
+                    Click stitches to lock/unlock • Locked stitches stay when regenerating
+                </div>
+            </div>
+            
+            <div id="combinationContainer" class="palette-container">
+                <!-- Combination will be generated here -->
+            </div>
+        </div>
+
+        <!-- Message Box -->
+        <div id="messageBox" class="message-box message-success hidden">
+            <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+            </svg>
+            <span id="messageText">Combination generated successfully!</span>
+        </div>
+    </div>
+
+    <script>
+        // Embroidery stitch database - 25 common stitches with expanded properties
+        const stitchDatabase = [
+            // Beginner stitches
+            { name: 'running stitch', difficulty: 'beginner', type: 'line', texture: 'smooth', function: 'outline', origin: 'universal', description: 'Basic forward-moving stitch' },
+            { name: 'backstitch', difficulty: 'beginner', type: 'line', texture: 'smooth', function: 'outline', origin: 'universal', description: 'Strong continuous line stitch' },
+            { name: 'straight stitch', difficulty: 'beginner', type: 'line', texture: 'smooth', function: 'decorative', origin: 'universal', description: 'Simple single straight stitch' },
+            { name: 'cross stitch', difficulty: 'beginner', type: 'fill', texture: 'textured', function: 'fill', origin: 'european', description: 'X-shaped decorative stitch' },
+            { name: 'blanket stitch', difficulty: 'beginner', type: 'edge', texture: 'textured', function: 'structural', origin: 'european', description: 'Decorative edge finishing stitch' },
+            { name: 'chain stitch', difficulty: 'beginner', type: 'line', texture: 'textured', function: 'outline', origin: 'asian', description: 'Looped line resembling chain links' },
+            { name: 'stem stitch', difficulty: 'beginner', type: 'line', texture: 'textured', function: 'outline', origin: 'universal', description: 'Twisted line stitch for curves' },
+            { name: 'split stitch', difficulty: 'beginner', type: 'line', texture: 'smooth', function: 'outline', origin: 'medieval', description: 'Line stitch that splits previous stitch' },
+            
+            // Intermediate stitches
+            { name: 'french knot', difficulty: 'intermediate', type: 'texture', texture: 'dimensional', function: 'decorative', origin: 'european', description: 'Small raised knot for texture' },
+            { name: 'lazy daisy', difficulty: 'intermediate', type: 'decorative', texture: 'dimensional', function: 'decorative', origin: 'european', description: 'Petal-shaped looped stitch' },
+            { name: 'satin stitch', difficulty: 'intermediate', type: 'fill', texture: 'smooth', function: 'fill', origin: 'universal', description: 'Smooth solid fill stitch' },
+            { name: 'long and short stitch', difficulty: 'intermediate', type: 'fill', texture: 'smooth', function: 'fill', origin: 'european', description: 'Blended filling technique' },
+            { name: 'herringbone stitch', difficulty: 'intermediate', type: 'decorative', texture: 'textured', function: 'decorative', origin: 'european', description: 'Zigzag decorative stitch' },
+            { name: 'feather stitch', difficulty: 'intermediate', type: 'decorative', texture: 'textured', function: 'decorative', origin: 'european', description: 'Branching decorative stitch' },
+            { name: 'fly stitch', difficulty: 'intermediate', type: 'decorative', texture: 'textured', function: 'decorative', origin: 'european', description: 'Y-shaped decorative stitch' },
+            { name: 'couching', difficulty: 'intermediate', type: 'line', texture: 'dimensional', function: 'outline', origin: 'universal', description: 'Laid thread secured with small stitches' },
+            { name: 'seed stitch', difficulty: 'intermediate', type: 'texture', texture: 'textured', function: 'fill', origin: 'universal', description: 'Small scattered stitches for texture' },
+            
+            // Advanced stitches
+            { name: 'bullion knot', difficulty: 'advanced', type: 'texture', texture: 'dimensional', function: 'decorative', origin: 'european', description: 'Coiled raised stitch' },
+            { name: 'woven wheel', difficulty: 'advanced', type: 'decorative', texture: 'dimensional', function: 'decorative', origin: 'european', description: 'Circular woven rose stitch' },
+            { name: 'cast-on stitch', difficulty: 'advanced', type: 'texture', texture: 'dimensional', function: 'decorative', origin: 'european', description: 'Dimensional raised stitch' },
+            { name: 'portuguese knotted stem stitch', difficulty: 'advanced', type: 'line', texture: 'dimensional', function: 'outline', origin: 'european', description: 'Heavily textured line stitch' },
+            { name: 'raised chain band', difficulty: 'advanced', type: 'decorative', texture: 'dimensional', function: 'decorative', origin: 'european', description: 'Dimensional chain variation' },
+            { name: 'spider web stitch', difficulty: 'advanced', type: 'decorative', texture: 'dimensional', function: 'decorative', origin: 'european', description: 'Circular woven decorative stitch' },
+            { name: 'turkey work', difficulty: 'advanced', type: 'texture', texture: 'dimensional', function: 'fill', origin: 'middle-eastern', description: 'Loop stitch creating pile texture' },
+            { name: 'padded satin stitch', difficulty: 'advanced', type: 'fill', texture: 'dimensional', function: 'fill', origin: 'universal', description: 'Raised filled area stitch' }
+        ];
+
+        let currentCombination = [];
+        let lockedStitches = new Set();
+        let dominantStitch = null;
+
+        // Stitch validation and info display
+        function validateStitch(input) {
+            const inputField = document.getElementById('stitchInput');
+            const errorDiv = document.getElementById('stitchError');
+            const stitchInfoDiv = document.getElementById('stitchInfo');
+            const suggestionsDiv = document.getElementById('suggestions');
+            const generateBtn = document.getElementById('generateBtn');
+
+            const normalizedInput = input.toLowerCase().trim();
+
+            // Find stitch by name (partial match)
+            const foundStitch = stitchDatabase.find(stitch => 
+                stitch.name.includes(normalizedInput) || normalizedInput.includes(stitch.name)
+            );
+
+            if (foundStitch && normalizedInput.length > 2) {
+                inputField.classList.remove('error');
+                errorDiv.classList.add('hidden');
+                suggestionsDiv.classList.add('hidden');
+                dominantStitch = foundStitch;
+                generateBtn.disabled = false;
+                
+                // Update stitch info display
+                updateStitchInfo(foundStitch);
+                stitchInfoDiv.classList.remove('hidden');
+                
+                return true;
+            } else if (normalizedInput.length > 2) {
+                inputField.classList.add('error');
+                errorDiv.classList.remove('hidden');
+                stitchInfoDiv.classList.add('hidden');
+                suggestionsDiv.classList.remove('hidden');
+                generateBtn.disabled = true;
+                return false;
+            } else {
+                inputField.classList.remove('error');
+                errorDiv.classList.add('hidden');
+                stitchInfoDiv.classList.add('hidden');
+                suggestionsDiv.classList.remove('hidden');
+                generateBtn.disabled = normalizedInput.length === 0 ? false : true;
+                return false;
+            }
+        }
+
+        function updateStitchInfo(stitch) {
+            document.getElementById('stitchInfoName').textContent = stitch.name;
+            document.getElementById('stitchInfoDifficulty').textContent = stitch.difficulty;
+            document.getElementById('stitchInfoType').textContent = stitch.type;
+        }
+
+        function handleKeyPress(event) {
+            if (event.key === 'Enter' && !document.getElementById('generateBtn').disabled) {
+                generateCombination();
+            }
+        }
+
+        // Combination generation
+        function generateCombination() {
+            if (!dominantStitch) return;
+
+            const size = parseInt(document.getElementById('paletteSize').value);
+            const theme = document.getElementById('themeSelect').value;
+            
+            // Reset locks and add dominant stitch as locked
+            lockedStitches.clear();
+            lockedStitches.add(dominantStitch.name);
+
+            // Generate combination
+            currentCombination = createCombination(dominantStitch, theme, size);
+            displayCombination();
+            
+            document.getElementById('resultsSection').classList.remove('hidden');
+            showMessage('Combination generated successfully!', 'success');
+        }
+
+        function createCombination(dominantStitch, theme, size) {
+            let availableStitches = [...stitchDatabase];
+            let combination = [dominantStitch];
+
+            // Remove locked stitches from available options
+            lockedStitches.forEach(stitchName => {
+                availableStitches = availableStitches.filter(s => s.name !== stitchName);
+            });
+
+            // Remove dominant stitch from available
+            availableStitches = availableStitches.filter(s => s.name !== dominantStitch.name);
+
+            // Calculate how many more stitches we need
+            const remainingSlots = size - combination.length;
+            let selectedStitches = [];
+
+            if (remainingSlots > 0) {
+                switch (theme) {
+                    case 'similar':
+                        selectedStitches = getSimilarStitches(dominantStitch, availableStitches, remainingSlots);
+                        break;
+                    case 'progressive':
+                        selectedStitches = getProgressiveStitches(dominantStitch, availableStitches, remainingSlots);
+                        break;
+                    case 'mixed':
+                        selectedStitches = getMixedStitches(availableStitches, remainingSlots);
+                        break;
+                    case 'complementary':
+                        selectedStitches = getComplementaryStitches(dominantStitch, availableStitches, remainingSlots);
+                        break;
+                    case 'texture':
+                        selectedStitches = getTextureStitches(dominantStitch, availableStitches, remainingSlots);
+                        break;
+                    case 'function':
+                        selectedStitches = getFunctionStitches(dominantStitch, availableStitches, remainingSlots);
+                        break;
+                    case 'traditional':
+                        selectedStitches = getTraditionalStitches(dominantStitch, availableStitches, remainingSlots);
+                        break;
+                }
+
+                combination.push(...selectedStitches);
+            }
+
+            return combination.slice(0, size);
+        }
+
+        function getSimilarStitches(dominantStitch, availableStitches, count) {
+            const sameDifficulty = shuffleArray(availableStitches.filter(s => s.difficulty === dominantStitch.difficulty));
+            const sameType = shuffleArray(availableStitches.filter(s => s.type === dominantStitch.type && s.difficulty !== dominantStitch.difficulty));
+            
+            const selected = [];
+            let sameDiffIndex = 0;
+            let sameTypeIndex = 0;
+            
+            for (let i = 0; i < count; i++) {
+                if (sameDiffIndex < sameDifficulty.length && Math.random() > 0.3) {
+                    selected.push(sameDifficulty[sameDiffIndex]);
+                    sameDiffIndex++;
+                } else if (sameTypeIndex < sameType.length) {
+                    selected.push(sameType[sameTypeIndex]);
+                    sameTypeIndex++;
+                } else if (sameDiffIndex < sameDifficulty.length) {
+                    selected.push(sameDifficulty[sameDiffIndex]);
+                    sameDiffIndex++;
+                }
+            }
+            
+            return selected;
+        }
+
+        function getProgressiveStitches(dominantStitch, availableStitches, count) {
+            const difficultyOrder = ['beginner', 'intermediate', 'advanced'];
+            const currentIndex = difficultyOrder.indexOf(dominantStitch.difficulty);
+            
+            const selected = [];
+            let nextDifficulties = [];
+            
+            // Build progression
+            for (let i = 0; i < count; i++) {
+                const targetIndex = Math.min(currentIndex + Math.floor(i / 2) + 1, difficultyOrder.length - 1);
+                const targetDifficulty = difficultyOrder[targetIndex];
+                nextDifficulties.push(targetDifficulty);
+            }
+            
+            nextDifficulties.forEach(difficulty => {
+                const candidates = availableStitches.filter(s => s.difficulty === difficulty);
+                if (candidates.length > 0) {
+                    const randomStitch = candidates[Math.floor(Math.random() * candidates.length)];
+                    selected.push(randomStitch);
+                    availableStitches = availableStitches.filter(s => s.name !== randomStitch.name);
+                }
+            });
+            
+            return selected;
+        }
+
+        function getMixedStitches(availableStitches, count) {
+            return shuffleArray(availableStitches).slice(0, count);
+        }
+
+        function getComplementaryStitches(dominantStitch, availableStitches, count) {
+            const differentTypes = shuffleArray(availableStitches.filter(s => s.type !== dominantStitch.type));
+            const sameType = shuffleArray(availableStitches.filter(s => s.type === dominantStitch.type));
+            
+            const selected = [];
+            let diffTypeIndex = 0;
+            let sameTypeIndex = 0;
+            
+            for (let i = 0; i < count; i++) {
+                if (diffTypeIndex < differentTypes.length && Math.random() > 0.25) {
+                    selected.push(differentTypes[diffTypeIndex]);
+                    diffTypeIndex++;
+                } else if (sameTypeIndex < sameType.length) {
+                    selected.push(sameType[sameTypeIndex]);
+                    sameTypeIndex++;
+                } else if (diffTypeIndex < differentTypes.length) {
+                    selected.push(differentTypes[diffTypeIndex]);
+                    diffTypeIndex++;
+                }
+            }
+            
+            return selected;
+        }
+
+        function getTextureStitches(dominantStitch, availableStitches, count) {
+            const sameTexture = shuffleArray(availableStitches.filter(s => s.texture === dominantStitch.texture));
+            const relatedTexture = shuffleArray(availableStitches.filter(s => s.texture !== dominantStitch.texture));
+            
+            const selected = [];
+            let sameTextureIndex = 0;
+            let relatedIndex = 0;
+            
+            for (let i = 0; i < count; i++) {
+                if (sameTextureIndex < sameTexture.length && Math.random() > 0.3) {
+                    selected.push(sameTexture[sameTextureIndex]);
+                    sameTextureIndex++;
+                } else if (relatedIndex < relatedTexture.length) {
+                    selected.push(relatedTexture[relatedIndex]);
+                    relatedIndex++;
+                } else if (sameTextureIndex < sameTexture.length) {
+                    selected.push(sameTexture[sameTextureIndex]);
+                    sameTextureIndex++;
+                }
+            }
+            
+            return selected;
+        }
+
+        function getFunctionStitches(dominantStitch, availableStitches, count) {
+            const sameFunction = shuffleArray(availableStitches.filter(s => s.function === dominantStitch.function));
+            const differentFunction = shuffleArray(availableStitches.filter(s => s.function !== dominantStitch.function));
+            
+            const selected = [];
+            let sameFunctionIndex = 0;
+            let diffFunctionIndex = 0;
+            
+            for (let i = 0; i < count; i++) {
+                if (sameFunctionIndex < sameFunction.length && Math.random() > 0.2) {
+                    selected.push(sameFunction[sameFunctionIndex]);
+                    sameFunctionIndex++;
+                } else if (diffFunctionIndex < differentFunction.length) {
+                    selected.push(differentFunction[diffFunctionIndex]);
+                    diffFunctionIndex++;
+                } else if (sameFunctionIndex < sameFunction.length) {
+                    selected.push(sameFunction[sameFunctionIndex]);
+                    sameFunctionIndex++;
+                }
+            }
+            
+            return selected;
+        }
+
+        function getTraditionalStitches(dominantStitch, availableStitches, count) {
+            const sameOrigin = shuffleArray(availableStitches.filter(s => s.origin === dominantStitch.origin));
+            const differentOrigin = shuffleArray(availableStitches.filter(s => s.origin !== dominantStitch.origin));
+            
+            const selected = [];
+            let sameOriginIndex = 0;
+            let diffOriginIndex = 0;
+            
+            for (let i = 0; i < count; i++) {
+                if (sameOriginIndex < sameOrigin.length && Math.random() > 0.25) {
+                    selected.push(sameOrigin[sameOriginIndex]);
+                    sameOriginIndex++;
+                } else if (diffOriginIndex < differentOrigin.length) {
+                    selected.push(differentOrigin[diffOriginIndex]);
+                    diffOriginIndex++;
+                } else if (sameOriginIndex < sameOrigin.length) {
+                    selected.push(sameOrigin[sameOriginIndex]);
+                    sameOriginIndex++;
+                }
+            }
+            
+            return selected;
+        }
+
+        function shuffleArray(array) {
+            const shuffled = [...array];
+            for (let i = shuffled.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+            }
+            return shuffled;
+        }
+
+        // Display combination
+        function displayCombination() {
+            const container = document.getElementById('combinationContainer');
+            const size = parseInt(document.getElementById('paletteSize').value);
+            const theme = document.getElementById('themeSelect').value;
+            
+            const stitchesHtml = currentCombination.map((stitch, index) => {
+                const isLocked = lockedStitches.has(stitch.name);
+                return `
+                    <div class="palette-stitch ${isLocked ? 'locked' : ''}" 
+                         onclick="toggleStitchLock('${stitch.name}')"
+                         title="Click to ${isLocked ? 'unlock' : 'lock'} • ${stitch.description}">
+                        ${isLocked ? '<div class="lock-icon">🔒</div>' : ''}
+                        <div class="stitch-name">${stitch.name}</div>
+                        <div class="stitch-difficulty">${stitch.difficulty}</div>
+                    </div>
+                `;
+            }).join('');
+
+            container.innerHTML = `
+                <div class="palette-stitches">
+                    ${stitchesHtml}
+                </div>
+                <div class="palette-info">
+                    <div class="palette-name">${theme.charAt(0).toUpperCase() + theme.slice(1)} Combination (${currentCombination.length} stitches)</div>
+                    <div class="palette-description">
+                        Built around "${dominantStitch.name}" • ${lockedStitches.size} stitch${lockedStitches.size !== 1 ? 'es' : ''} locked
+                    </div>
+                    <div class="palette-actions">
+                        <button class="btn btn-secondary btn-small" onclick="regenerateCombination()">
+                            <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                            </svg>
+                            Regenerate
+                        </button>
+                        <button class="btn btn-primary btn-small" onclick="saveCombination()">
+                            <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2z"></path>
+                            </svg>
+                            Save Combination
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Stitch locking
+        function toggleStitchLock(stitchName) {
+            if (lockedStitches.has(stitchName)) {
+                lockedStitches.delete(stitchName);
+                showMessage(`Unlocked "${stitchName}"`, 'success');
+            } else {
+                lockedStitches.add(stitchName);
+                showMessage(`Locked "${stitchName}"`, 'success');
+            }
+            
+            // Update display
+            displayCombination();
+        }
+
+        function regenerateCombination() {
+            if (!dominantStitch) return;
+            
+            const size = parseInt(document.getElementById('paletteSize').value);
+            const theme = document.getElementById('themeSelect').value;
+
+            // Keep locked stitches and regenerate the rest
+            const lockedStitchObjects = [];
+            lockedStitches.forEach(stitchName => {
+                const stitchObj = stitchDatabase.find(s => s.name === stitchName);
+                if (stitchObj) {
+                    lockedStitchObjects.push(stitchObj);
+                }
+            });
+
+            // Generate new combination preserving locked stitches
+            let availableStitches = [...stitchDatabase];
+            
+            // Remove all locked stitches from available options
+            lockedStitches.forEach(stitchName => {
+                availableStitches = availableStitches.filter(s => s.name !== stitchName);
+            });
+
+            // Start with locked stitches
+            let combination = [...lockedStitchObjects];
+            
+            // Calculate how many more stitches we need
+            const remainingSlots = size - combination.length;
+            let selectedStitches = [];
+
+            if (remainingSlots > 0) {
+                switch (theme) {
+                    case 'similar':
+                        selectedStitches = getSimilarStitches(dominantStitch, availableStitches, remainingSlots);
+                        break;
+                    case 'progressive':
+                        selectedStitches = getProgressiveStitches(dominantStitch, availableStitches, remainingSlots);
+                        break;
+                    case 'mixed':
+                        selectedStitches = getMixedStitches(availableStitches, remainingSlots);
+                        break;
+                    case 'complementary':
+                        selectedStitches = getComplementaryStitches(dominantStitch, availableStitches, remainingSlots);
+                        break;
+                }
+
+                combination.push(...selectedStitches);
+            }
+
+            currentCombination = combination.slice(0, size);
+            displayCombination();
+            
+            showMessage('Combination regenerated with locked stitches preserved!', 'success');
+        }
+
+        function saveCombination() {
+            const combinationText = currentCombination.map(s => `${s.name} (${s.difficulty}) - ${s.description}`).join('\n');
+            
+            navigator.clipboard.writeText(combinationText).then(() => {
+                showMessage('Combination copied to clipboard!', 'success');
+            }).catch(() => {
+                // Fallback
+                const textArea = document.createElement('textarea');
+                textArea.value = combinationText;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                showMessage('Combination copied to clipboard!', 'success');
+            });
+        }
+
+        function showMessage(text, type = 'success') {
+            const messageBox = document.getElementById('messageBox');
+            const messageText = document.getElementById('messageText');
+            
+            messageText.textContent = text;
+            messageBox.className = `message-box message-${type}`;
+            messageBox.classList.remove('hidden');
+            
+            setTimeout(() => {
+                messageBox.classList.add('hidden');
+            }, 3000);
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            // Set up initial state
+            const inputField = document.getElementById('stitchInput');
+            inputField.focus();
+        });
+    </script>
+    
+    <div class="text-center text-stone-700 text-sm font-normal font-sans mt-8">
+        Custom-built embroidery companion tool, v.1.0
+    </div>
+</body>
+</html>
