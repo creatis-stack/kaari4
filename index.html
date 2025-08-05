@@ -48,6 +48,10 @@
             margin-top: 1rem;
         }
         
+        .mt-8 {
+            margin-top: 2rem;
+        }
+        
         h1 {
             font-size: 2.25rem;
             font-weight: bold;
@@ -319,6 +323,14 @@
             font-weight: 600;
         }
         
+        .font-normal {
+            font-weight: normal;
+        }
+        
+        .font-sans {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+        
         .text-sm {
             font-size: 0.875rem;
         }
@@ -327,8 +339,28 @@
             color: #78716c;
         }
         
+        .text-stone-700 {
+            color: #57534e;
+        }
+        
         .text-stone-900 {
             color: #1c1917;
+        }
+        
+        .text-black {
+            color: #000000;
+        }
+        
+        .underline {
+            text-decoration: underline;
+        }
+        
+        .transition {
+            transition: all 0.2s;
+        }
+        
+        .hover\:text-black:hover {
+            color: #000000;
         }
         
         .hidden {
@@ -449,9 +481,9 @@
 </head>
 <body>
     <div class="container">
-        <div class="text-center mb-8"><div class="text-center mb-8"><div class="text-center mb-8"> <img src="logo_kaari.png" alt="Kaari Logo" width="150" height="150"> </div>
+        <div class="text-center mb-8">
+           <div class="text-center mb-8"><div class="text-center mb-8"><div class="text-center mb-8"> <img src="logo_kaari.png" alt="Kaari Logo" width="150" height="150"> </div>        
         </div>
-
         <!-- Input Section -->
         <div class="mb-6 card">
             <h3 class="font-semibold text-stone-900 mb-4">Dominant Stitch</h3>
@@ -461,7 +493,7 @@
                         type="text" 
                         id="stitchInput" 
                         class="input" 
-                        placeholder="e.g., running stitch, backstitch, french knot"
+                        placeholder="e.g., french knot, 1, backstitch, 3"
                         oninput="validateStitch(this.value)"
                         onkeypress="handleKeyPress(event)"
                     />
@@ -477,7 +509,7 @@
                     </div>
                 </div>
                 <div id="suggestions" class="suggestions">
-                    Try: running stitch, backstitch, french knot, chain stitch, blanket stitch, satin stitch, stem stitch, lazy daisy
+                    Try: 1=french knot, 2=running stitch, 3=backstitch, 4=satin stitch, 5=chain stitch, 6=lazy daisy, 7=stem stitch, 8=blanket stitch
                 </div>
             </div>
             
@@ -498,10 +530,9 @@
                         <option value="similar">Similar - Same difficulty level</option>
                         <option value="progressive">Progressive - Building complexity</option>
                         <option value="mixed">Mixed - Varied difficulties</option>
-                        <option value="complementary">Complementary - Different stitch types</option>
-                        <option value="texture">Texture Harmony - Similar visual texture</option>
-                        <option value="function">Function Based - Same purpose stitches</option>
-                        <option value="traditional">Traditional - Same cultural origins</option>
+                        <option value="texture">Texture - Similar visual texture</option>
+                        <option value="function">Function - Same purpose stitches</option>
+                        <option value="classic">Classic - Most often seen together</option>
                     </select>
                 </div>
             </div>
@@ -546,38 +577,34 @@
         let currentCombination = [];
         let lockedStitches = new Set();
 
-        // Embroidery stitch database - 25 common stitches with expanded properties
+        // Embroidery stitch database with numbers for quick reference
         const stitchDatabase = [
             // Beginner stitches
-            { name: 'running stitch', difficulty: 'beginner', type: 'line', texture: 'smooth', function: 'outline', origin: 'universal', description: 'Basic forward-moving stitch' },
-            { name: 'backstitch', difficulty: 'beginner', type: 'line', texture: 'smooth', function: 'outline', origin: 'universal', description: 'Strong continuous line stitch' },
-            { name: 'straight stitch', difficulty: 'beginner', type: 'line', texture: 'smooth', function: 'decorative', origin: 'universal', description: 'Simple single straight stitch' },
-            { name: 'cross stitch', difficulty: 'beginner', type: 'fill', texture: 'textured', function: 'fill', origin: 'european', description: 'X-shaped decorative stitch' },
-            { name: 'blanket stitch', difficulty: 'beginner', type: 'edge', texture: 'textured', function: 'structural', origin: 'european', description: 'Decorative edge finishing stitch' },
-            { name: 'chain stitch', difficulty: 'beginner', type: 'line', texture: 'textured', function: 'outline', origin: 'asian', description: 'Looped line resembling chain links' },
-            { name: 'stem stitch', difficulty: 'beginner', type: 'line', texture: 'textured', function: 'outline', origin: 'universal', description: 'Twisted line stitch for curves' },
-            { name: 'split stitch', difficulty: 'beginner', type: 'line', texture: 'smooth', function: 'outline', origin: 'medieval', description: 'Line stitch that splits previous stitch' },
-            
-            // Intermediate stitches
-            { name: 'french knot', difficulty: 'intermediate', type: 'texture', texture: 'dimensional', function: 'decorative', origin: 'european', description: 'Small raised knot for texture' },
-            { name: 'lazy daisy', difficulty: 'intermediate', type: 'decorative', texture: 'dimensional', function: 'decorative', origin: 'european', description: 'Petal-shaped looped stitch' },
-            { name: 'satin stitch', difficulty: 'intermediate', type: 'fill', texture: 'smooth', function: 'fill', origin: 'universal', description: 'Smooth solid fill stitch' },
-            { name: 'long and short stitch', difficulty: 'intermediate', type: 'fill', texture: 'smooth', function: 'fill', origin: 'european', description: 'Blended filling technique' },
-            { name: 'herringbone stitch', difficulty: 'intermediate', type: 'decorative', texture: 'textured', function: 'decorative', origin: 'european', description: 'Zigzag decorative stitch' },
-            { name: 'feather stitch', difficulty: 'intermediate', type: 'decorative', texture: 'textured', function: 'decorative', origin: 'european', description: 'Branching decorative stitch' },
-            { name: 'fly stitch', difficulty: 'intermediate', type: 'decorative', texture: 'textured', function: 'decorative', origin: 'european', description: 'Y-shaped decorative stitch' },
-            { name: 'couching', difficulty: 'intermediate', type: 'line', texture: 'dimensional', function: 'outline', origin: 'universal', description: 'Laid thread secured with small stitches' },
-            { name: 'seed stitch', difficulty: 'intermediate', type: 'texture', texture: 'textured', function: 'fill', origin: 'universal', description: 'Small scattered stitches for texture' },
-            
-            // Advanced stitches
-            { name: 'bullion knot', difficulty: 'advanced', type: 'texture', texture: 'dimensional', function: 'decorative', origin: 'european', description: 'Coiled raised stitch' },
-            { name: 'woven wheel', difficulty: 'advanced', type: 'decorative', texture: 'dimensional', function: 'decorative', origin: 'european', description: 'Circular woven rose stitch' },
-            { name: 'cast-on stitch', difficulty: 'advanced', type: 'texture', texture: 'dimensional', function: 'decorative', origin: 'european', description: 'Dimensional raised stitch' },
-            { name: 'portuguese knotted stem stitch', difficulty: 'advanced', type: 'line', texture: 'dimensional', function: 'outline', origin: 'european', description: 'Heavily textured line stitch' },
-            { name: 'raised chain band', difficulty: 'advanced', type: 'decorative', texture: 'dimensional', function: 'decorative', origin: 'european', description: 'Dimensional chain variation' },
-            { name: 'spider web stitch', difficulty: 'advanced', type: 'decorative', texture: 'dimensional', function: 'decorative', origin: 'european', description: 'Circular woven decorative stitch' },
-            { name: 'turkey work', difficulty: 'advanced', type: 'texture', texture: 'dimensional', function: 'fill', origin: 'middle-eastern', description: 'Loop stitch creating pile texture' },
-            { name: 'padded satin stitch', difficulty: 'advanced', type: 'fill', texture: 'dimensional', function: 'fill', origin: 'universal', description: 'Raised filled area stitch' }
+            { id: 1, name: 'french knot', difficulty: 'intermediate', type: 'texture', texture: 'dimensional', function: 'decorative', origin: 'european', description: 'Small raised knot for texture' },
+            { id: 2, name: 'running stitch', difficulty: 'beginner', type: 'line', texture: 'smooth', function: 'outline', origin: 'universal', description: 'Basic forward-moving stitch' },
+            { id: 3, name: 'backstitch', difficulty: 'beginner', type: 'line', texture: 'smooth', function: 'outline', origin: 'universal', description: 'Strong continuous line stitch' },
+            { id: 4, name: 'satin stitch', difficulty: 'intermediate', type: 'fill', texture: 'smooth', function: 'fill', origin: 'universal', description: 'Smooth solid fill stitch' },
+            { id: 5, name: 'chain stitch', difficulty: 'beginner', type: 'line', texture: 'textured', function: 'outline', origin: 'asian', description: 'Looped line resembling chain links' },
+            { id: 6, name: 'lazy daisy', difficulty: 'intermediate', type: 'decorative', texture: 'dimensional', function: 'decorative', origin: 'european', description: 'Petal-shaped looped stitch' },
+            { id: 7, name: 'stem stitch', difficulty: 'beginner', type: 'line', texture: 'textured', function: 'outline', origin: 'universal', description: 'Twisted line stitch for curves' },
+            { id: 8, name: 'blanket stitch', difficulty: 'beginner', type: 'edge', texture: 'textured', function: 'structural', origin: 'european', description: 'Decorative edge finishing stitch' },
+            { id: 9, name: 'seed stitch', difficulty: 'intermediate', type: 'texture', texture: 'textured', function: 'fill', origin: 'universal', description: 'Small scattered stitches for texture' },
+            { id: 10, name: 'straight stitch', difficulty: 'beginner', type: 'line', texture: 'smooth', function: 'decorative', origin: 'universal', description: 'Simple single straight stitch' },
+            { id: 11, name: 'cross stitch', difficulty: 'beginner', type: 'fill', texture: 'textured', function: 'fill', origin: 'european', description: 'X-shaped decorative stitch' },
+            { id: 12, name: 'split stitch', difficulty: 'beginner', type: 'line', texture: 'smooth', function: 'outline', origin: 'medieval', description: 'Line stitch that splits previous stitch' },
+            { id: 13, name: 'long and short stitch', difficulty: 'intermediate', type: 'fill', texture: 'smooth', function: 'fill', origin: 'european', description: 'Blended filling technique' },
+            { id: 14, name: 'herringbone stitch', difficulty: 'intermediate', type: 'decorative', texture: 'textured', function: 'decorative', origin: 'european', description: 'Zigzag decorative stitch' },
+            { id: 15, name: 'feather stitch', difficulty: 'intermediate', type: 'decorative', texture: 'textured', function: 'decorative', origin: 'european', description: 'Branching decorative stitch' },
+            { id: 16, name: 'fly stitch', difficulty: 'intermediate', type: 'decorative', texture: 'textured', function: 'decorative', origin: 'european', description: 'Y-shaped decorative stitch' },
+            { id: 17, name: 'couching', difficulty: 'intermediate', type: 'line', texture: 'dimensional', function: 'outline', origin: 'universal', description: 'Laid thread secured with small stitches' },
+            { id: 18, name: 'bullion knot', difficulty: 'advanced', type: 'texture', texture: 'dimensional', function: 'decorative', origin: 'european', description: 'Coiled raised stitch' },
+            { id: 19, name: 'woven wheel', difficulty: 'advanced', type: 'decorative', texture: 'dimensional', function: 'decorative', origin: 'european', description: 'Circular woven rose stitch' },
+            { id: 20, name: 'cast-on stitch', difficulty: 'advanced', type: 'texture', texture: 'dimensional', function: 'decorative', origin: 'european', description: 'Dimensional raised stitch' },
+            { id: 21, name: 'portuguese knotted stem stitch', difficulty: 'advanced', type: 'line', texture: 'dimensional', function: 'outline', origin: 'european', description: 'Heavily textured line stitch' },
+            { id: 22, name: 'raised chain band', difficulty: 'advanced', type: 'decorative', texture: 'dimensional', function: 'decorative', origin: 'european', description: 'Dimensional chain variation' },
+            { id: 23, name: 'spider web stitch', difficulty: 'advanced', type: 'decorative', texture: 'dimensional', function: 'decorative', origin: 'european', description: 'Circular woven decorative stitch' },
+            { id: 24, name: 'turkey work', difficulty: 'advanced', type: 'texture', texture: 'dimensional', function: 'fill', origin: 'middle-eastern', description: 'Loop stitch creating pile texture' },
+            { id: 25, name: 'padded satin stitch', difficulty: 'advanced', type: 'fill', texture: 'dimensional', function: 'fill', origin: 'universal', description: 'Raised filled area stitch' }
         ];
 
         // SVG icons for each stitch pattern - larger and more detailed
@@ -642,13 +669,20 @@
             const generateBtn = document.getElementById('generateBtn');
 
             const normalizedInput = input.toLowerCase().trim();
+            let foundStitch = null;
 
-            // Find stitch by name (partial match)
-            const foundStitch = stitchDatabase.find(stitch => 
-                stitch.name.includes(normalizedInput) || normalizedInput.includes(stitch.name)
-            );
+            // Check if input is a number
+            const inputNumber = parseInt(normalizedInput);
+            if (!isNaN(inputNumber)) {
+                foundStitch = stitchDatabase.find(stitch => stitch.id === inputNumber);
+            } else {
+                // Find stitch by name (partial match)
+                foundStitch = stitchDatabase.find(stitch => 
+                    stitch.name.includes(normalizedInput) || normalizedInput.includes(stitch.name)
+                );
+            }
 
-            if (foundStitch && normalizedInput.length > 2) {
+            if (foundStitch && normalizedInput.length > 0) {
                 inputField.classList.remove('error');
                 errorDiv.classList.add('hidden');
                 suggestionsDiv.classList.add('hidden');
@@ -660,7 +694,7 @@
                 stitchInfoDiv.classList.remove('hidden');
                 
                 return true;
-            } else if (normalizedInput.length > 2) {
+            } else if (normalizedInput.length > 0) {
                 inputField.classList.add('error');
                 errorDiv.classList.remove('hidden');
                 stitchInfoDiv.classList.add('hidden');
@@ -672,13 +706,13 @@
                 errorDiv.classList.add('hidden');
                 stitchInfoDiv.classList.add('hidden');
                 suggestionsDiv.classList.remove('hidden');
-                generateBtn.disabled = normalizedInput.length === 0 ? false : true;
+                generateBtn.disabled = true;
                 return false;
             }
         }
 
         function updateStitchInfo(stitch) {
-            document.getElementById('stitchInfoName').textContent = stitch.name;
+            document.getElementById('stitchInfoName').textContent = `${stitch.id}. ${stitch.name}`;
             document.getElementById('stitchInfoDifficulty').textContent = stitch.difficulty;
             document.getElementById('stitchInfoType').textContent = stitch.type;
         }
@@ -744,8 +778,8 @@
                     case 'function':
                         selectedStitches = getFunctionStitches(dominantStitch, availableStitches, remainingSlots);
                         break;
-                    case 'traditional':
-                        selectedStitches = getTraditionalStitches(dominantStitch, availableStitches, remainingSlots);
+                    case 'classic':
+                        selectedStitches = getClassicStitches(dominantStitch, availableStitches, remainingSlots);
                         break;
                 }
 
@@ -753,6 +787,44 @@
             }
 
             return combination.slice(0, size);
+        }
+
+        function getClassicStitches(dominantStitch, availableStitches, count) {
+            // Define classic stitch combinations that are commonly seen together
+            const classicCombinations = {
+                'french knot': ['lazy daisy', 'stem stitch', 'backstitch', 'straight stitch', 'seed stitch'],
+                'lazy daisy': ['french knot', 'stem stitch', 'backstitch', 'chain stitch', 'fly stitch'],
+                'backstitch': ['french knot', 'satin stitch', 'stem stitch', 'straight stitch', 'split stitch'],
+                'stem stitch': ['french knot', 'lazy daisy', 'satin stitch', 'chain stitch', 'backstitch'],
+                'satin stitch': ['backstitch', 'stem stitch', 'split stitch', 'long and short stitch', 'straight stitch'],
+                'chain stitch': ['lazy daisy', 'stem stitch', 'feather stitch', 'blanket stitch', 'fly stitch'],
+                'running stitch': ['backstitch', 'straight stitch', 'seed stitch', 'cross stitch', 'blanket stitch'],
+                'blanket stitch': ['chain stitch', 'feather stitch', 'herringbone stitch', 'running stitch', 'fly stitch'],
+                'cross stitch': ['running stitch', 'backstitch', 'straight stitch', 'herringbone stitch', 'blanket stitch'],
+                'seed stitch': ['french knot', 'straight stitch', 'running stitch', 'fly stitch', 'lazy daisy']
+            };
+
+            const classicPartners = classicCombinations[dominantStitch.name] || [];
+            const selected = [];
+            
+            // First, try to get classic partners
+            for (let partnerName of classicPartners) {
+                if (selected.length >= count) break;
+                const partner = availableStitches.find(s => s.name === partnerName);
+                if (partner) {
+                    selected.push(partner);
+                    availableStitches = availableStitches.filter(s => s.name !== partnerName);
+                }
+            }
+            
+            // Fill remaining slots with similar function stitches
+            if (selected.length < count) {
+                const similarFunction = availableStitches.filter(s => s.function === dominantStitch.function);
+                const remaining = count - selected.length;
+                selected.push(...shuffleArray(similarFunction).slice(0, remaining));
+            }
+            
+            return selected;
         }
 
         function getSimilarStitches(dominantStitch, availableStitches, count) {
@@ -881,30 +953,6 @@
             return selected;
         }
 
-        function getTraditionalStitches(dominantStitch, availableStitches, count) {
-            const sameOrigin = shuffleArray(availableStitches.filter(s => s.origin === dominantStitch.origin));
-            const differentOrigin = shuffleArray(availableStitches.filter(s => s.origin !== dominantStitch.origin));
-            
-            const selected = [];
-            let sameOriginIndex = 0;
-            let diffOriginIndex = 0;
-            
-            for (let i = 0; i < count; i++) {
-                if (sameOriginIndex < sameOrigin.length && Math.random() > 0.25) {
-                    selected.push(sameOrigin[sameOriginIndex]);
-                    sameOriginIndex++;
-                } else if (diffOriginIndex < differentOrigin.length) {
-                    selected.push(differentOrigin[diffOriginIndex]);
-                    diffOriginIndex++;
-                } else if (sameOriginIndex < sameOrigin.length) {
-                    selected.push(sameOrigin[sameOriginIndex]);
-                    sameOriginIndex++;
-                }
-            }
-            
-            return selected;
-        }
-
         function shuffleArray(array) {
             const shuffled = [...array];
             for (let i = shuffled.length - 1; i > 0; i--) {
@@ -920,10 +968,9 @@
                 'similar': `These stitches share similar difficulty levels and working techniques, creating a cohesive skill progression.`,
                 'progressive': `This combination builds complexity gradually, helping you develop skills step by step.`,
                 'mixed': `A diverse mix of stitch types and difficulties for varied texture and visual interest.`,
-                'complementary': `Different stitch types that work together to create balanced contrast and harmony.`,
                 'texture': `Stitches selected for compatible visual textures that enhance each other.`,
                 'function': `These stitches serve similar purposes and work well together in embroidery projects.`,
-                'traditional': `Stitches from similar cultural traditions that historically complement each other.`
+                'classic': `Time-tested stitch combinations that are traditionally used together in embroidery work.`
             };
             return explanations[theme] || 'A carefully curated combination of embroidery stitches.';
         }
@@ -1047,8 +1094,8 @@
                     case 'function':
                         selectedStitches = getFunctionStitches(dominantStitch, availableStitches, remainingSlots);
                         break;
-                    case 'traditional':
-                        selectedStitches = getTraditionalStitches(dominantStitch, availableStitches, remainingSlots);
+                    case 'classic':
+                        selectedStitches = getClassicStitches(dominantStitch, availableStitches, remainingSlots);
                         break;
                 }
 
