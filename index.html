@@ -199,111 +199,121 @@
         
         .palette-stitches {
             display: flex;
-            min-height: 160px;
+            min-height: 200px;
             flex-wrap: wrap;
+            border-radius: 0.5rem;
+            overflow: hidden;
         }
         
         .palette-stitch {
             flex: 1;
-            min-width: 150px;
+            min-width: 200px;
+            height: 200px;
             position: relative;
             cursor: pointer;
             transition: all 0.2s;
-            background: linear-gradient(135deg, #fef7ed 0%, #fed7aa 100%);
-            border-right: 1px solid #e7e5e4;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 1rem;
-        }
-        
-        .palette-stitch:last-child {
-            border-right: none;
+            overflow: hidden;
         }
         
         .palette-stitch:hover {
-            background: linear-gradient(135deg, #fed7aa 0%, #fdba74 100%);
             transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
             z-index: 10;
         }
         
         .palette-stitch.locked {
-            background: linear-gradient(135deg, #ecfdf5 0%, #bbf7d0 100%);
-        }
-        
-        .palette-stitch.locked:hover {
-            background: linear-gradient(135deg, #bbf7d0 0%, #86efac 100%);
+            border: 3px solid #3b82f6;
         }
         
         .lock-icon {
             position: absolute;
             top: 0.5rem;
             right: 0.5rem;
-            width: 1rem;
-            height: 1rem;
-            background: rgba(0,0,0,0.8);
+            width: 1.5rem;
+            height: 1.5rem;
+            background: rgba(59, 130, 246, 0.9);
             color: white;
             border-radius: 0.25rem;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 0.75rem;
+            font-size: 0.875rem;
+            z-index: 5;
+        }
+        
+        .stitch-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: all 0.3s;
+        }
+        
+        .palette-stitch:hover .stitch-image {
+            transform: scale(1.05);
+        }
+        
+        .stitch-image.placeholder {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #6c757d;
+            font-size: 1rem;
+            font-weight: 600;
+            text-align: center;
+            width: 100%;
+            height: 100%;
+        }
+        
+        .stitch-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.6) 50%, transparent 100%);
+            color: white;
+            padding: 1rem;
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+        }
+        
+        .palette-stitch:hover .stitch-overlay {
+            opacity: 1;
         }
         
         .stitch-name {
             font-weight: 600;
-            color: #7c2d12;
-            text-align: center;
-            font-size: 0.875rem;
-            line-height: 1.2;
-        }
-        
-        .stitch-icon {
-            width: 80px;
-            height: 40px;
-            color: #7c2d12;
-            margin-bottom: 0.5rem;
-        }
-        
-        .stitch-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
+            font-size: 1rem;
+            margin-bottom: 0.25rem;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.8);
         }
         
         .stitch-difficulty {
-            position: absolute;
-            bottom: 0.5rem;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(124, 45, 18, 0.9);
-            color: white;
-            padding: 0.25rem 0.5rem;
-            border-radius: 0.25rem;
-            font-size: 0.75rem;
-            opacity: 0;
-            transition: opacity 0.2s;
-        }
-        
-        .palette-stitch:hover .stitch-difficulty {
-            opacity: 1;
+            font-size: 0.875rem;
+            opacity: 0.9;
+            text-transform: capitalize;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.8);
         }
         
         .palette-info {
-            padding: 1rem;
+            padding: 1.5rem;
+            background: #f8f9fa;
+            border-top: 1px solid #e9ecef;
         }
         
         .palette-name {
-            font-weight: 600;
-            color: #7c2d12;
+            font-weight: 700;
+            color: #212529;
+            font-size: 1.125rem;
             margin-bottom: 0.5rem;
         }
         
         .palette-description {
-            color: #78716c;
+            color: #6c757d;
             font-size: 0.875rem;
             margin-bottom: 1rem;
+            line-height: 1.5;
         }
         
         .palette-actions {
@@ -441,6 +451,21 @@
             color: #64748b;
         }
         
+        .image-note {
+            background-color: #eff6ff;
+            border: 1px solid #bfdbfe;
+            border-radius: 0.375rem;
+            padding: 0.75rem;
+            margin-top: 1rem;
+            font-size: 0.875rem;
+            color: #1e40af;
+        }
+        
+        .image-note-title {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+        
         @media (max-width: 768px) {
             h1 {
                 font-size: 1.875rem;
@@ -469,12 +494,19 @@
             
             .palette-stitch {
                 min-width: auto;
-                border-right: none;
-                border-bottom: 1px solid #e7e5e4;
+                height: 120px;
             }
             
-            .palette-stitch:last-child {
-                border-bottom: none;
+            .stitch-overlay {
+                padding: 0.75rem;
+            }
+            
+            .stitch-name {
+                font-size: 0.875rem;
+            }
+            
+            .stitch-difficulty {
+                font-size: 0.75rem;
             }
         }
     </style>
@@ -482,7 +514,7 @@
 <body>
     <div class="container">
         <div class="text-center mb-8">
-            <div class="text-center mb-8"><div class="text-center mb-8"><div class="text-center mb-8"> <img src="logo_kaari.png" alt="Kaari Logo" width="150" height="150"> </div>
+            <div class="text-center mb-8"> <div class="text-center mb-8"><div class="text-center mb-8"><div class="text-center mb-8"> <img src="logo_kaari.png" alt="Kaari Logo" width="150" height="150"> </div> </div>
         </div>
 
         <!-- Input Section -->
@@ -543,7 +575,7 @@
         <div class="mb-6 text-center">
             <button onclick="generateCombination()" class="btn btn-primary" id="generateBtn" disabled>
                 <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
                 </svg>
                 Generate Combination
             </button>
@@ -551,16 +583,22 @@
 
         <!-- Results Section -->
         <div id="resultsSection" class="hidden">
-            <div class="flex justify-between items-center mb-4">
-                <h3 class="font-semibold text-stone-900">Generated Combination</h3>
+            <div class="mb-4">
+                <h3 class="font-semibold text-stone-900 mb-2">Generated Combination</h3>
                 <div class="text-sm text-stone-600">
-                    Click stitches to lock/unlock • Locked stitches stay when regenerating
+                    Hover to see stitch details • Click to lock/unlock • Locked stitches stay when regenerating
                 </div>
             </div>
             
             <div id="combinationContainer" class="palette-container">
                 <!-- Combination will be generated here -->
             </div>
+        </div>
+
+        <!-- Image Note -->
+        <div class="image-note">
+            <div class="image-note-title">📸 Using Your Own Images</div>
+            <p>To use actual embroidery stitch photos, you can modify the <code>stitchImages</code> object in the code with URLs to your stitch images. Replace the placeholder images with real photographs of embroidery stitches for better visual reference.</p>
         </div>
 
         <!-- Message Box -->
@@ -570,6 +608,10 @@
             </svg>
             <span id="messageText">Combination generated successfully!</span>
         </div>
+    </div>
+
+    <div class="text-center text-stone-700 text-sm font-normal font-sans mt-8">
+        Custom-built by <a href="https://creatis.in/pages/stack" class="underline hover:text-black transition">Creatis Stack</a>, v.08.25
     </div>
 
     <script>
@@ -595,33 +637,21 @@
             { id: 13, name: 'herringbone', difficulty: 'intermediate', type: 'decorative', texture: 'textured', function: 'fill', origin: 'european', description: 'Crossed diagonal stitches forming herringbone pattern' }
         ];
 
-        // SVG icons for each stitch pattern
-        const stitchIcons = {
-            'running stitch': '<svg viewBox="0 0 120 40" class="stitch-icon"><path d="M10 20 L25 20 M35 20 L50 20 M60 20 L75 20 M85 20 L100 20 M110 20 L115 20" stroke="currentColor" stroke-width="3" fill="none" stroke-linecap="round"/><circle cx="17.5" cy="20" r="1.5" fill="currentColor"/><circle cx="42.5" cy="20" r="1.5" fill="currentColor"/><circle cx="67.5" cy="20" r="1.5" fill="currentColor"/><circle cx="92.5" cy="20" r="1.5" fill="currentColor"/></svg>',
-            
-            'chain stitch': '<svg viewBox="0 0 120 40" class="stitch-icon"><ellipse cx="25" cy="20" rx="8" ry="12" stroke="currentColor" stroke-width="3" fill="none"/><ellipse cx="40" cy="20" rx="8" ry="12" stroke="currentColor" stroke-width="3" fill="none"/><ellipse cx="55" cy="20" rx="8" ry="12" stroke="currentColor" stroke-width="3" fill="none"/><ellipse cx="70" cy="20" rx="8" ry="12" stroke="currentColor" stroke-width="3" fill="none"/><ellipse cx="85" cy="20" rx="8" ry="12" stroke="currentColor" stroke-width="3" fill="none"/></svg>',
-            
-            'chain stitch variant': '<svg viewBox="0 0 120 40" class="stitch-icon"><ellipse cx="25" cy="20" rx="6" ry="10" stroke="currentColor" stroke-width="3" fill="none"/><ellipse cx="40" cy="20" rx="6" ry="10" stroke="currentColor" stroke-width="3" fill="none"/><ellipse cx="55" cy="20" rx="6" ry="10" stroke="currentColor" stroke-width="3" fill="none"/><ellipse cx="70" cy="20" rx="6" ry="10" stroke="currentColor" stroke-width="3" fill="none"/><ellipse cx="85" cy="20" rx="6" ry="10" stroke="currentColor" stroke-width="3" fill="none"/><path d="M31 20 L34 20 M46 20 L49 20 M61 20 L64 20 M76 20 L79 20" stroke="currentColor" stroke-width="2"/></svg>',
-            
-            'french knot': '<svg viewBox="0 0 120 40" class="stitch-icon"><circle cx="20" cy="20" r="4" fill="currentColor"/><circle cx="35" cy="15" r="4" fill="currentColor"/><circle cx="50" cy="25" r="4" fill="currentColor"/><circle cx="65" cy="18" r="4" fill="currentColor"/><circle cx="80" cy="22" r="4" fill="currentColor"/><circle cx="95" cy="16" r="4" fill="currentColor"/><circle cx="110" cy="24" r="4" fill="currentColor"/></svg>',
-            
-            'open cretan': '<svg viewBox="0 0 120 40" class="stitch-icon"><path d="M20 15 L30 20 L20 25 M30 20 L50 20 M50 15 L60 20 L50 25 M60 20 L80 20 M80 15 L90 20 L80 25 M90 20 L110 20" stroke="currentColor" stroke-width="3" fill="none" stroke-linejoin="round"/></svg>',
-            
-            'raised chevron': '<svg viewBox="0 0 120 40" class="stitch-icon"><path d="M10 25 L25 10 L40 25 L55 10 L70 25 L85 10 L100 25 L115 10" stroke="currentColor" stroke-width="4" fill="none" stroke-linejoin="round"/><path d="M10 30 L25 15 L40 30 L55 15 L70 30 L85 15 L100 30 L115 15" stroke="currentColor" stroke-width="3" fill="none" stroke-linejoin="round" opacity="0.7"/><circle cx="25" cy="12.5" r="2" fill="currentColor"/><circle cx="55" cy="12.5" r="2" fill="currentColor"/><circle cx="85" cy="12.5" r="2" fill="currentColor"/></svg>',
-            
-            'chevron': '<svg viewBox="0 0 120 40" class="stitch-icon"><path d="M10 30 L25 10 L40 30 L55 10 L70 30 L85 10 L100 30 L115 10" stroke="currentColor" stroke-width="4" fill="none" stroke-linejoin="round"/><path d="M10 10 L25 30 L40 10 L55 30 L70 10 L85 30 L100 10 L115 30" stroke="currentColor" stroke-width="3" fill="none" stroke-linejoin="round" opacity="0.7"/></svg>',
-            
-            'running back': '<svg viewBox="0 0 120 40" class="stitch-icon"><path d="M115 20 L100 20 M90 20 L75 20 M65 20 L50 20 M40 20 L25 20 M15 20 L10 20" stroke="currentColor" stroke-width="3" fill="none" stroke-linecap="round"/><circle cx="107.5" cy="20" r="1.5" fill="currentColor"/><circle cx="82.5" cy="20" r="1.5" fill="currentColor"/><circle cx="57.5" cy="20" r="1.5" fill="currentColor"/><circle cx="32.5" cy="20" r="1.5" fill="currentColor"/><path d="M120 15 L115 20 L120 25" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></svg>',
-            
-            'pistil': '<svg viewBox="0 0 120 40" class="stitch-icon"><circle cx="25" cy="25" r="3" fill="currentColor"/><path d="M25 25 L25 10" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><circle cx="50" cy="28" r="3" fill="currentColor"/><path d="M50 28 L50 8" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><circle cx="75" cy="22" r="3" fill="currentColor"/><path d="M75 22 L75 12" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><circle cx="100" cy="26" r="3" fill="currentColor"/><path d="M100 26 L100 6" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg>',
-            
-            'fern': '<svg viewBox="0 0 120 40" class="stitch-icon"><path d="M20 20 L100 20" stroke="currentColor" stroke-width="3"/><path d="M30 20 L25 10 M30 20 L25 30 M50 20 L45 12 M50 20 L45 28 M70 20 L65 8 M70 20 L65 32 M90 20 L85 14 M90 20 L85 26" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>',
-            
-            'russian chain stitch': '<svg viewBox="0 0 120 40" class="stitch-icon"><ellipse cx="25" cy="20" rx="8" ry="12" stroke="currentColor" stroke-width="3" fill="none"/><ellipse cx="40" cy="20" rx="8" ry="12" stroke="currentColor" stroke-width="3" fill="none"/><ellipse cx="55" cy="20" rx="8" ry="12" stroke="currentColor" stroke-width="3" fill="none"/><ellipse cx="70" cy="20" rx="8" ry="12" stroke="currentColor" stroke-width="3" fill="none"/><path d="M17 20 Q25 15 33 20 Q25 25 17 20 M32 20 Q40 15 48 20 Q40 25 32 20 M47 20 Q55 15 63 20 Q55 25 47 20 M62 20 Q70 15 78 20 Q70 25 62 20" stroke="currentColor" stroke-width="2" fill="none"/></svg>',
-            
-            'cable chain': '<svg viewBox="0 0 120 40" class="stitch-icon"><ellipse cx="25" cy="20" rx="8" ry="12" stroke="currentColor" stroke-width="3" fill="none"/><ellipse cx="40" cy="20" rx="8" ry="12" stroke="currentColor" stroke-width="3" fill="none"/><ellipse cx="55" cy="20" rx="8" ry="12" stroke="currentColor" stroke-width="3" fill="none"/><ellipse cx="70" cy="20" rx="8" ry="12" stroke="currentColor" stroke-width="3" fill="none"/><path d="M21 16 L29 24 M21 24 L29 16 M36 16 L44 24 M36 24 L44 16 M51 16 L59 24 M51 24 L59 16 M66 16 L74 24 M66 24 L74 16" stroke="currentColor" stroke-width="2"/></svg>',
-            
-            'herringbone': '<svg viewBox="0 0 120 40" class="stitch-icon"><path d="M10 30 L25 10 L40 30 L55 10 L70 30 L85 10 L100 30 L115 10" stroke="currentColor" stroke-width="4" fill="none" stroke-linejoin="round"/><path d="M10 10 L25 30 L40 10 L55 30 L70 10 L85 30 L100 10 L115 30" stroke="currentColor" stroke-width="3" fill="none" stroke-linejoin="round" opacity="0.7"/></svg>'
+        // Stitch images - replace these URLs with actual embroidery stitch photos
+        const stitchImages = {
+            'running stitch': 'https://images.unsplash.com/photo-1581833971358-2c8b550f87b3?w=400&h=200&fit=crop&crop=center',
+            'chain stitch': 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=200&fit=crop&crop=center',
+            'french knot': 'https://images.unsplash.com/photo-1587560699334-cc4ff634909a?w=400&h=200&fit=crop&crop=center',
+            'open cretan': 'https://images.unsplash.com/photo-1580618672591-eb180b1a973f?w=400&h=200&fit=crop&crop=center',
+            'raised chevron': 'https://images.unsplash.com/photo-1576020799627-aeac74d58064?w=400&h=200&fit=crop&crop=center',
+            'chevron': 'https://images.unsplash.com/photo-1594736797933-d0401ba2fe65?w=400&h=200&fit=crop&crop=center',
+            'chain stitch variant': 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=200&fit=crop&crop=center',
+            'running back': 'https://images.unsplash.com/photo-1581833971358-2c8b550f87b3?w=400&h=200&fit=crop&crop=center',
+            'pistil': 'https://images.unsplash.com/photo-1587560699334-cc4ff634909a?w=400&h=200&fit=crop&crop=center',
+            'fern': 'https://images.unsplash.com/photo-1604076947221-58e8b6db0bb8?w=400&h=200&fit=crop&crop=center',
+            'russian chain stitch': 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=200&fit=crop&crop=center',
+            'cable chain': 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=200&fit=crop&crop=center',
+            'herringbone': 'https://images.unsplash.com/photo-1594736797933-d0401ba2fe65?w=400&h=200&fit=crop&crop=center'
         };
 
         // Stitch validation and info display
@@ -684,6 +714,16 @@
         function handleKeyPress(event) {
             if (event.key === 'Enter' && !document.getElementById('generateBtn').disabled) {
                 generateCombination();
+            }
+        }
+
+        // Create stitch image element
+        function createStitchImage(stitchName) {
+            const imageUrl = stitchImages[stitchName];
+            if (imageUrl) {
+                return `<img src="${imageUrl}" alt="${stitchName}" class="stitch-image" onerror="this.outerHTML='<div class=&quot;stitch-image placeholder&quot;>Image<br>Unavailable</div>'">`;
+            } else {
+                return `<div class="stitch-image placeholder">No Image<br>Available</div>`;
             }
         }
 
@@ -758,14 +798,7 @@
                 'french knot': ['chain stitch', 'running stitch', 'pistil', 'fern', 'open cretan'],
                 'open cretan': ['french knot', 'fern', 'herringbone', 'chain stitch'],
                 'raised chevron': ['chevron', 'herringbone', 'chain stitch', 'cable chain'],
-                'chevron': ['raised chevron', 'herringbone', 'open cretan', 'running stitch'],
-                'chain stitch variant': ['chain stitch', 'cable chain', 'russian chain stitch', 'french knot'],
-                'running back': ['running stitch', 'chain stitch', 'herringbone', 'french knot'],
-                'pistil': ['french knot', 'fern', 'chain stitch', 'open cretan'],
-                'fern': ['pistil', 'french knot', 'open cretan', 'chain stitch'],
-                'russian chain stitch': ['chain stitch', 'cable chain', 'chain stitch variant', 'french knot'],
-                'cable chain': ['chain stitch', 'russian chain stitch', 'chain stitch variant', 'herringbone'],
-                'herringbone': ['chevron', 'open cretan', 'running stitch', 'chain stitch']
+                'chevron': ['raised chevron', 'herringbone', 'open cretan', 'running stitch']
             };
 
             const classicPartners = classicCombinations[dominantStitch.name] || [];
@@ -923,17 +956,17 @@
             
             const stitchesHtml = currentCombination.map((stitch, index) => {
                 const isLocked = lockedStitches.has(stitch.name);
-                const icon = stitchIcons[stitch.name] || '';
+                const image = createStitchImage(stitch.name);
                 return `
                     <div class="palette-stitch ${isLocked ? 'locked' : ''}" 
                          onclick="toggleStitchLock('${stitch.name}')"
                          title="Click to ${isLocked ? 'unlock' : 'lock'} • ${stitch.description}">
                         ${isLocked ? '<div class="lock-icon">🔒</div>' : ''}
-                        <div class="stitch-container">
-                            ${icon}
+                        ${image}
+                        <div class="stitch-overlay">
                             <div class="stitch-name">${stitch.name}</div>
+                            <div class="stitch-difficulty">${stitch.difficulty}</div>
                         </div>
-                        <div class="stitch-difficulty">${stitch.difficulty}</div>
                     </div>
                 `;
             }).join('');
@@ -1082,9 +1115,5 @@
             inputField.focus();
         });
     </script>
-    
-    <div class="text-center text-stone-700 text-sm font-normal font-sans mt-8">
-        Custom-built by <a href="https://creatis.in/pages/stack" class="underline hover:text-black transition">Creatis Stack</a>, v.08.25
-    </div>
 </body>
 </html>
