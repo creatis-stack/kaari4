@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kaari - Embroidery Stitch Harmony Generator</title>
+    <title>Kaari - Embroidery Stitch Design Helper</title>
     <style>
         * {
             margin: 0;
@@ -20,7 +20,7 @@
         .container {
             min-height: 100vh;
             padding: 1.5rem;
-            max-width: 48rem;
+            max-width: 56rem;
             margin: 0 auto;
         }
         
@@ -62,6 +62,13 @@
         .tagline {
             color: #a8a29e;
             font-style: italic;
+            margin-bottom: 0.5rem;
+        }
+        
+        .subtitle {
+            color: #78716c;
+            font-size: 0.875rem;
+            font-weight: 500;
         }
         
         .card {
@@ -189,6 +196,48 @@
             gap: 1rem;
         }
         
+        .intent-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .intent-btn {
+            padding: 1rem;
+            border: 2px solid #e7e5e4;
+            border-radius: 0.75rem;
+            background: white;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: left;
+        }
+        
+        .intent-btn:hover {
+            border-color: #ea580c;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(124, 45, 18, 0.1);
+        }
+        
+        .intent-btn.active {
+            border-color: #ea580c;
+            background: #fef7ed;
+        }
+        
+        .intent-title {
+            font-weight: 600;
+            color: #7c2d12;
+            margin-bottom: 0.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .intent-desc {
+            font-size: 0.875rem;
+            color: #78716c;
+        }
+        
         .palette-container {
             background: white;
             border-radius: 0.5rem;
@@ -241,6 +290,22 @@
             z-index: 5;
         }
         
+        .category-icon {
+            position: absolute;
+            top: 0.5rem;
+            left: 0.5rem;
+            width: 1.5rem;
+            height: 1.5rem;
+            background: rgba(234, 88, 12, 0.9);
+            color: white;
+            border-radius: 0.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            z-index: 5;
+        }
+        
         .stitch-image {
             width: 100%;
             height: 100%;
@@ -270,7 +335,7 @@
             bottom: 0;
             left: 0;
             right: 0;
-            background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.6) 50%, transparent 100%);
+            background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.7) 70%, transparent 100%);
             color: white;
             padding: 1rem;
             opacity: 0;
@@ -289,11 +354,18 @@
             text-shadow: 0 1px 2px rgba(0,0,0,0.8);
         }
         
-        .stitch-difficulty {
-            font-size: 0.875rem;
+        .stitch-category {
+            font-size: 0.75rem;
             opacity: 0.9;
-            text-transform: capitalize;
+            margin-bottom: 0.25rem;
             text-shadow: 0 1px 2px rgba(0,0,0,0.8);
+        }
+        
+        .stitch-usage {
+            font-size: 0.75rem;
+            opacity: 0.8;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.8);
+            line-height: 1.2;
         }
         
         .palette-info {
@@ -483,6 +555,10 @@
                 grid-template-columns: 1fr;
             }
             
+            .intent-buttons {
+                grid-template-columns: 1fr;
+            }
+            
             .stitch-info-details {
                 flex-direction: column;
                 gap: 0.5rem;
@@ -505,8 +581,8 @@
                 font-size: 0.875rem;
             }
             
-            .stitch-difficulty {
-                font-size: 0.75rem;
+            .stitch-category, .stitch-usage {
+                font-size: 0.7rem;
             }
         }
     </style>
@@ -514,19 +590,51 @@
 <body>
     <div class="container">
         <div class="text-center mb-8">
-            <div class="text-center mb-8"> <div class="text-center mb-8"><div class="text-center mb-8"><div class="text-center mb-8"> <img src="logo_kaari.png" alt="Kaari Logo" width="150" height="150"> </div> </div>
+           <img src="logo_kaari.png" alt="Kaari Logo" width="150" height="150"> 
+        </div> 
+    </div>
+
+        <!-- Design Intent Section -->
+        <div class="mb-6 card">
+            <h3 class="font-semibold text-stone-900 mb-4">What are you making?</h3>
+            <div class="intent-buttons" id="intentButtons">
+                <div class="intent-btn" onclick="selectIntent('borders')">
+                    <div class="intent-title">➖ Borders & Outlines</div>
+                    <div class="intent-desc">For edges, stems, and clean shapes</div>
+                </div>
+                <div class="intent-btn" onclick="selectIntent('fill')">
+                    <div class="intent-title">🔘 Fill & Texture</div>
+                    <div class="intent-desc">For covering areas or creating patterns</div>
+                </div>
+                <div class="intent-btn" onclick="selectIntent('details')">
+                    <div class="intent-title">🌸 Details & Accents</div>
+                    <div class="intent-desc">For tiny decorations and highlights</div>
+                </div>
+                <div class="intent-btn" onclick="selectIntent('structural')">
+                    <div class="intent-title">🔗 Structural & Joining</div>
+                    <div class="intent-desc">For strength, binding, or holding threads</div>
+                </div>
+                <div class="intent-btn" onclick="selectIntent('3d')">
+                    <div class="intent-title">🌀 3D & Decorative</div>
+                    <div class="intent-desc">For raised, sculptural elements</div>
+                </div>
+                <div class="intent-btn" onclick="selectIntent('custom')">
+                    <div class="intent-title">✨ Custom Selection</div>
+                    <div class="intent-desc">Pick a specific stitch to build around</div>
+                </div>
+            </div>
         </div>
 
-        <!-- Input Section -->
-        <div class="mb-6 card">
-            <h3 class="font-semibold text-stone-900 mb-4">Dominant Stitch</h3>
+        <!-- Custom Stitch Input (hidden by default) -->
+        <div class="mb-6 card hidden" id="customStitchSection">
+            <h3 class="font-semibold text-stone-900 mb-4">Choose Your Main Stitch</h3>
             <div class="mb-4">
                 <div class="flex gap-2">
                     <input 
                         type="text" 
                         id="stitchInput" 
                         class="input" 
-                        placeholder="e.g., french knot, 1, backstitch, 3"
+                        placeholder="e.g., french knot, running stitch, or just type a number 1-20"
                         oninput="validateStitch(this.value)"
                         onkeypress="handleKeyPress(event)"
                     />
@@ -537,18 +645,22 @@
                 <div id="stitchInfo" class="stitch-info hidden">
                     <div class="stitch-info-name" id="stitchInfoName"></div>
                     <div class="stitch-info-details">
-                        <div>Difficulty: <span class="stitch-info-difficulty" id="stitchInfoDifficulty"></span></div>
-                        <div>Type: <span id="stitchInfoType"></span></div>
+                        <div>Category: <span id="stitchInfoCategory"></span></div>
+                        <div>Best for: <span id="stitchInfoUsage"></span></div>
                     </div>
                 </div>
                 <div id="suggestions" class="suggestions">
-                    Try: 1=running stitch, 2=chain stitch, 3=french knot, 4=open cretan, 5=raised chevron, 6=chevron, 7=chain stitch variant, 8=running back
+                    Try: 1=running stitch, 2=backstitch, 3=stem stitch, 4=chain stitch, 5=split stitch, 6=french knot, 7=lazy daisy, 8=satin stitch
                 </div>
             </div>
-            
+        </div>
+
+        <!-- Configuration Section -->
+        <div class="mb-6 card" id="configSection" style="display: none;">
+            <h3 class="font-semibold text-stone-900 mb-4">Combination Settings</h3>
             <div class="form-row">
                 <div>
-                    <label class="font-medium text-stone-900 mb-2" style="display: block;">Combination Size</label>
+                    <label class="font-medium text-stone-900 mb-2" style="display: block;">Number of Stitches</label>
                     <select class="select" id="paletteSize">
                         <option value="3" selected>3 stitches</option>
                         <option value="4">4 stitches</option>
@@ -558,35 +670,32 @@
                 </div>
                 
                 <div>
-                    <label class="font-medium text-stone-900 mb-2" style="display: block;">Harmony Style</label>
-                    <select class="select" id="themeSelect">
-                        <option value="similar">Similar - Same difficulty level</option>
-                        <option value="progressive">Progressive - Building complexity</option>
-                        <option value="mixed">Mixed - Varied difficulties</option>
-                        <option value="texture">Texture - Similar visual texture</option>
-                        <option value="function">Function - Same purpose stitches</option>
-                        <option value="classic">Classic - Most often seen together</option>
+                    <label class="font-medium text-stone-900 mb-2" style="display: block;">Mix Style</label>
+                    <select class="select" id="mixStyle">
+                        <option value="focused">Focused - Same category</option>
+                        <option value="related">Related - Similar purposes</option>
+                        <option value="mixed">Mixed - Varied categories</option>
                     </select>
                 </div>
             </div>
         </div>
 
         <!-- Generate Button -->
-        <div class="mb-6 text-center">
-            <button onclick="generateCombination()" class="btn btn-primary" id="generateBtn" disabled>
+        <div class="mb-6 text-center" id="generateSection" style="display: none;">
+            <button onclick="generateCombination()" class="btn btn-primary" id="generateBtn">
                 <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
                 </svg>
-                Generate Combination
+                Generate Stitches
             </button>
         </div>
 
         <!-- Results Section -->
         <div id="resultsSection" class="hidden">
             <div class="mb-4">
-                <h3 class="font-semibold text-stone-900 mb-2">Generated Combination</h3>
+                <h3 class="font-semibold text-stone-900 mb-2">Your Stitch Combination</h3>
                 <div class="text-sm text-stone-600">
-                    Hover to see stitch details • Click to lock/unlock • Locked stitches stay when regenerating
+                    Hover to see details • Click to lock/unlock • Locked stitches stay when regenerating
                 </div>
             </div>
             
@@ -595,6 +704,11 @@
             </div>
         </div>
 
+        <!-- Image Note -->
+        <div class="image-note">
+            <div class="image-note-title">📸 Using Your Own Images</div>
+            <p>Replace the image URLs in the code with your own stitch photos. Use 400x400px square images for best results. Name them like "1.png", "2.png" etc. and update the <code>stitchImages</code> object accordingly.</p>
+        </div>
 
         <!-- Message Box -->
         <div id="messageBox" class="message-box message-success hidden">
@@ -611,51 +725,119 @@
 
     <script>
         // Global variables
+        let selectedIntent = null;
         let dominantStitch = null;
         let currentCombination = [];
         let lockedStitches = new Set();
 
-        // Embroidery stitch database with numbers for quick reference
+        // Enhanced embroidery stitch database with usage categories
         const stitchDatabase = [
-            { id: 1, name: 'running stitch', difficulty: 'beginner', type: 'line', texture: 'smooth', function: 'outline', origin: 'universal', description: 'Basic forward-moving stitch, fundamental to all embroidery' },
-            { id: 2, name: 'chain stitch', difficulty: 'beginner', type: 'line', texture: 'textured', function: 'outline', origin: 'asian', description: 'Looped line resembling chain links, versatile for curves' },
-            { id: 3, name: 'french knot', difficulty: 'intermediate', type: 'texture', texture: 'dimensional', function: 'decorative', origin: 'european', description: 'Small raised knot perfect for texture and flower centers' },
-            { id: 4, name: 'open cretan', difficulty: 'intermediate', type: 'decorative', texture: 'textured', function: 'border', origin: 'mediterranean', description: 'Open branching stitch ideal for leaves and borders' },
-            { id: 5, name: 'raised chevron', difficulty: 'advanced', type: 'decorative', texture: 'dimensional', function: 'border', origin: 'european', description: 'Raised zigzag pattern with dimensional quality' },
-            { id: 6, name: 'chevron', difficulty: 'intermediate', type: 'decorative', texture: 'textured', function: 'border', origin: 'european', description: 'Classic zigzag border stitch for geometric patterns' },
-            { id: 7, name: 'chain stitch variant', difficulty: 'intermediate', type: 'line', texture: 'textured', function: 'outline', origin: 'asian', description: 'Variation of basic chain stitch with unique characteristics' },
-            { id: 8, name: 'running back', difficulty: 'beginner', type: 'line', texture: 'smooth', function: 'outline', origin: 'universal', description: 'Running stitch worked in reverse for stronger lines' },
-            { id: 9, name: 'pistil', difficulty: 'intermediate', type: 'texture', texture: 'dimensional', function: 'decorative', origin: 'european', description: 'Extended french knot resembling flower stamens' },
-            { id: 10, name: 'fern', difficulty: 'intermediate', type: 'decorative', texture: 'textured', function: 'decorative', origin: 'european', description: 'Branching stitch mimicking fern fronds' },
-            { id: 11, name: 'russian chain stitch', difficulty: 'advanced', type: 'line', texture: 'dimensional', function: 'outline', origin: 'russian', description: 'Ornate chain variation with twisted appearance' },
-            { id: 12, name: 'cable chain', difficulty: 'intermediate', type: 'line', texture: 'dimensional', function: 'outline', origin: 'european', description: 'Chain stitch with cable-like twisted appearance' },
-            { id: 13, name: 'herringbone', difficulty: 'intermediate', type: 'decorative', texture: 'textured', function: 'fill', origin: 'european', description: 'Crossed diagonal stitches forming herringbone pattern' }
+            { id: 1, name: 'running stitch', category: 'borders', bestFor: 'Simple outlines, dashed borders, quilting', icon: '➖' },
+            { id: 2, name: 'backstitch', category: 'borders', bestFor: 'Strong continuous lines, lettering, neat outlines', icon: '➖' },
+            { id: 3, name: 'stem stitch', category: 'borders', bestFor: 'Stems, curves, organic lines', icon: '➖' },
+            { id: 4, name: 'chain stitch', category: 'borders', bestFor: 'Bold outlines, decorative chains, stems', icon: '➖' },
+            { id: 5, name: 'split stitch', category: 'borders', bestFor: 'Thick lines, outlines, textured borders', icon: '➖' },
+            
+            { id: 6, name: 'french knot', category: 'details', bestFor: 'Dots, flower centers, textured accents', icon: '🌸' },
+            { id: 7, name: 'lazy daisy', category: 'details', bestFor: 'Petals, leaves, small motifs', icon: '🌸' },
+            { id: 8, name: 'bullion knot', category: 'details', bestFor: 'Roses, textured lines, coils', icon: '🌸' },
+            { id: 9, name: 'fly stitch', category: 'details', bestFor: 'Leaves, open lines, textures', icon: '🌸' },
+            { id: 10, name: 'pistil stitch', category: 'details', bestFor: 'Extended centers, dimensional dots', icon: '🌸' },
+            
+            { id: 11, name: 'satin stitch', category: 'fill', bestFor: 'Smooth solid fills, petals, shapes', icon: '🔘' },
+            { id: 12, name: 'long and short stitch', category: 'fill', bestFor: 'Shaded fills, realistic effects', icon: '🔘' },
+            { id: 13, name: 'seed stitch', category: 'fill', bestFor: 'Random fills, textured backgrounds', icon: '🔘' },
+            { id: 14, name: 'brick stitch', category: 'fill', bestFor: 'Patterned fills, structured areas', icon: '🔘' },
+            { id: 15, name: 'cross stitch', category: 'fill', bestFor: 'Geometric fills, grids, counted work', icon: '🔘' },
+            
+            { id: 16, name: 'buttonhole stitch', category: 'structural', bestFor: 'Edges, appliqué, eyelets', icon: '🔗' },
+            { id: 17, name: 'blanket stitch', category: 'structural', bestFor: 'Borders, blankets, edges', icon: '🔗' },
+            { id: 18, name: 'herringbone stitch', category: 'structural', bestFor: 'Decorative borders, seams, textures', icon: '🔗' },
+            { id: 19, name: 'couching', category: 'structural', bestFor: 'Holding thick threads, metallics, layered designs', icon: '🔗' },
+            
+            { id: 20, name: 'padded satin', category: '3d', bestFor: 'Raised fills, bold highlights', icon: '🌀' }
         ];
 
-        // Stitch images - replace these URLs with actual embroidery stitch photos
-        const stitchImages = {
-            'running stitch': '1.png',
-            'chain stitch': '2.png',
-            'french knot': '3.png',
-            'open cretan': '4.png',
-            'raised chevron': '5.png',
-            'chevron': '6.png',
-            'chain stitch variant': '7.png',
-            'running back': '8.png',
-            'pistil': '9.png',
-            'fern': '10.png',
-            'russian chain stitch': '11.png',
-            'cable chain': '12.png',
-            'herringbone': '13.png'
+        // Category definitions
+        const categories = {
+            borders: { name: 'Borders & Outlines', description: 'Perfect for defining shapes, stems, and edges', icon: '➖' },
+            fill: { name: 'Fill & Texture', description: 'Great for covering areas and creating patterns', icon: '🔘' },
+            details: { name: 'Details & Accents', description: 'Ideal for small decorations and highlights', icon: '🌸' },
+            structural: { name: 'Structural & Joining', description: 'Used for strength, binding, and holding', icon: '🔗' },
+            '3d': { name: '3D & Decorative', description: 'Creates raised, sculptural elements', icon: '🌀' }
         };
 
-        // Stitch validation and info display
+        // Stitch images - replace these URLs with your own stitch photos
+        const stitchImages = {
+            'running stitch': '1.png',
+            'backstitch': '2.png',
+            'stem stitch': '3.png',
+            'chain stitch': '4.png',
+            'split stitch': '5.png',
+            'french knot': '6.png',
+            'lazy daisy': '7.png',
+            'bullion knot': '8.png',
+            'fly stitch': '9.png',
+            'pistil stitch': '10.png',
+            'satin stitch': '11.png',
+            'long and short stitch': '12.png',
+            'seed stitch': '13.png',
+            'brick stitch': '14.png',
+            'cross stitch': '15.png',
+            'buttonhole stitch': '16.png',
+            'blanket stitch': '17.png',
+            'herringbone stitch': '18.png',
+            'couching': '19.png',
+            'padded satin': '20.png'
+        };
+
+        // Intent selection
+        function selectIntent(intent) {
+            selectedIntent = intent;
+            
+            // Update UI
+            const buttons = document.querySelectorAll('.intent-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            event.target.closest('.intent-btn').classList.add('active');
+            
+            // Show/hide relevant sections
+            const customSection = document.getElementById('customStitchSection');
+            const configSection = document.getElementById('configSection');
+            const generateSection = document.getElementById('generateSection');
+            
+            if (intent === 'custom') {
+                customSection.classList.remove('hidden');
+                configSection.style.display = 'none';
+                generateSection.style.display = 'none';
+            } else {
+                customSection.classList.add('hidden');
+                configSection.style.display = 'block';
+                generateSection.style.display = 'block';
+                
+                // Update mix style options based on intent
+                updateMixStyleOptions(intent);
+            }
+        }
+
+        function updateMixStyleOptions(intent) {
+            const mixStyleSelect = document.getElementById('mixStyle');
+            const categoryName = categories[intent]?.name || 'Selected category';
+            
+            mixStyleSelect.innerHTML = `
+                <option value="focused">Focused - ${categoryName} only</option>
+                <option value="related">Related - Similar purposes</option>
+                <option value="mixed">Mixed - All categories</option>
+            `;
+        }
+
+        // Stitch validation and info display (for custom selection)
         function validateStitch(input) {
             const inputField = document.getElementById('stitchInput');
             const errorDiv = document.getElementById('stitchError');
             const stitchInfoDiv = document.getElementById('stitchInfo');
             const suggestionsDiv = document.getElementById('suggestions');
-            const generateBtn = document.getElementById('generateBtn');
+            const configSection = document.getElementById('configSection');
+            const generateSection = document.getElementById('generateSection');
 
             const normalizedInput = input.toLowerCase().trim();
             let foundStitch = null;
@@ -676,11 +858,14 @@
                 errorDiv.classList.add('hidden');
                 suggestionsDiv.classList.add('hidden');
                 dominantStitch = foundStitch;
-                generateBtn.disabled = false;
                 
                 // Update stitch info display
                 updateStitchInfo(foundStitch);
                 stitchInfoDiv.classList.remove('hidden');
+                
+                // Show configuration and generate sections
+                configSection.style.display = 'block';
+                generateSection.style.display = 'block';
                 
                 return true;
             } else if (normalizedInput.length > 0) {
@@ -688,26 +873,28 @@
                 errorDiv.classList.remove('hidden');
                 stitchInfoDiv.classList.add('hidden');
                 suggestionsDiv.classList.remove('hidden');
-                generateBtn.disabled = true;
+                configSection.style.display = 'none';
+                generateSection.style.display = 'none';
                 return false;
             } else {
                 inputField.classList.remove('error');
                 errorDiv.classList.add('hidden');
                 stitchInfoDiv.classList.add('hidden');
                 suggestionsDiv.classList.remove('hidden');
-                generateBtn.disabled = true;
+                configSection.style.display = 'none';
+                generateSection.style.display = 'none';
                 return false;
             }
         }
 
         function updateStitchInfo(stitch) {
             document.getElementById('stitchInfoName').textContent = `${stitch.id}. ${stitch.name}`;
-            document.getElementById('stitchInfoDifficulty').textContent = stitch.difficulty;
-            document.getElementById('stitchInfoType').textContent = stitch.type;
+            document.getElementById('stitchInfoCategory').textContent = categories[stitch.category].name;
+            document.getElementById('stitchInfoUsage').textContent = stitch.bestFor;
         }
 
         function handleKeyPress(event) {
-            if (event.key === 'Enter' && !document.getElementById('generateBtn').disabled) {
+            if (event.key === 'Enter' && dominantStitch) {
                 generateCombination();
             }
         }
@@ -722,60 +909,51 @@
             }
         }
 
-        // Combination generation
+        // Main combination generation
         function generateCombination() {
-            if (!dominantStitch) return;
-
             const size = parseInt(document.getElementById('paletteSize').value);
-            const theme = document.getElementById('themeSelect').value;
+            const mixStyle = document.getElementById('mixStyle').value;
             
-            // Reset locks and add dominant stitch as locked
+            // Reset locks
             lockedStitches.clear();
-            lockedStitches.add(dominantStitch.name);
-
-            // Generate combination
-            currentCombination = createCombination(dominantStitch, theme, size);
-            displayCombination();
             
+            if (selectedIntent === 'custom' && dominantStitch) {
+                // Custom stitch-based generation
+                lockedStitches.add(dominantStitch.name);
+                currentCombination = createCustomCombination(dominantStitch, mixStyle, size);
+            } else if (selectedIntent && selectedIntent !== 'custom') {
+                // Intent-based generation
+                currentCombination = createIntentCombination(selectedIntent, mixStyle, size);
+            } else {
+                showMessage('Please select what you want to make first!', 'error');
+                return;
+            }
+            
+            displayCombination();
             document.getElementById('resultsSection').classList.remove('hidden');
-            showMessage('Combination generated successfully!', 'success');
+            showMessage('Stitch combination generated!', 'success');
         }
 
-        function createCombination(dominantStitch, theme, size) {
+        function createCustomCombination(dominantStitch, mixStyle, size) {
             let availableStitches = [...stitchDatabase];
             let combination = [dominantStitch];
-
-            // Remove locked stitches from available options
-            lockedStitches.forEach(stitchName => {
-                availableStitches = availableStitches.filter(s => s.name !== stitchName);
-            });
 
             // Remove dominant stitch from available
             availableStitches = availableStitches.filter(s => s.name !== dominantStitch.name);
 
-            // Calculate how many more stitches we need
-            const remainingSlots = size - combination.length;
+            const remainingSlots = size - 1;
             let selectedStitches = [];
 
             if (remainingSlots > 0) {
-                switch (theme) {
-                    case 'similar':
-                        selectedStitches = getSimilarStitches(dominantStitch, availableStitches, remainingSlots);
+                switch (mixStyle) {
+                    case 'focused':
+                        selectedStitches = getStitchesByCategory(dominantStitch.category, availableStitches, remainingSlots);
                         break;
-                    case 'progressive':
-                        selectedStitches = getProgressiveStitches(dominantStitch, availableStitches, remainingSlots);
+                    case 'related':
+                        selectedStitches = getRelatedStitches(dominantStitch, availableStitches, remainingSlots);
                         break;
                     case 'mixed':
                         selectedStitches = getMixedStitches(availableStitches, remainingSlots);
-                        break;
-                    case 'texture':
-                        selectedStitches = getTextureStitches(dominantStitch, availableStitches, remainingSlots);
-                        break;
-                    case 'function':
-                        selectedStitches = getFunctionStitches(dominantStitch, availableStitches, remainingSlots);
-                        break;
-                    case 'classic':
-                        selectedStitches = getClassicStitches(dominantStitch, availableStitches, remainingSlots);
                         break;
                 }
 
@@ -785,140 +963,94 @@
             return combination.slice(0, size);
         }
 
-        function getClassicStitches(dominantStitch, availableStitches, count) {
-            // Define classic stitch combinations that are commonly seen together
-            const classicCombinations = {
-                'running stitch': ['chain stitch', 'french knot', 'running back', 'herringbone'],
-                'chain stitch': ['french knot', 'running stitch', 'fern', 'pistil', 'cable chain'],
-                'french knot': ['chain stitch', 'running stitch', 'pistil', 'fern', 'open cretan'],
-                'open cretan': ['french knot', 'fern', 'herringbone', 'chain stitch'],
-                'raised chevron': ['chevron', 'herringbone', 'chain stitch', 'cable chain'],
-                'chevron': ['raised chevron', 'herringbone', 'open cretan', 'running stitch']
+        function createIntentCombination(intent, mixStyle, size) {
+            let availableStitches = [...stitchDatabase];
+            let selectedStitches = [];
+
+            switch (mixStyle) {
+                case 'focused':
+                    selectedStitches = getStitchesByCategory(intent, availableStitches, size);
+                    break;
+                case 'related':
+                    selectedStitches = getRelatedStitchesForIntent(intent, availableStitches, size);
+                    break;
+                case 'mixed':
+                    // Start with intent category, then mix
+                    const primaryStitches = getStitchesByCategory(intent, availableStitches, Math.ceil(size / 2));
+                    const remainingSlots = size - primaryStitches.length;
+                    const otherStitches = availableStitches.filter(s => 
+                        s.category !== intent && !primaryStitches.includes(s)
+                    );
+                    const mixedStitches = getMixedStitches(otherStitches, remainingSlots);
+                    selectedStitches = [...primaryStitches, ...mixedStitches];
+                    break;
+            }
+
+            return selectedStitches.slice(0, size);
+        }
+
+        function getStitchesByCategory(category, availableStitches, count) {
+            const categoryStitches = availableStitches.filter(s => s.category === category);
+            return shuffleArray(categoryStitches).slice(0, count);
+        }
+
+        function getRelatedStitches(dominantStitch, availableStitches, count) {
+            // Get stitches from same category first, then complementary categories
+            const sameCategory = availableStitches.filter(s => s.category === dominantStitch.category);
+            const complementary = getComplementaryStitches(dominantStitch.category, availableStitches);
+            
+            const selected = [];
+            const sameCategoryShuffled = shuffleArray(sameCategory);
+            const complementaryShuffled = shuffleArray(complementary);
+            
+            // Fill with 60% same category, 40% complementary
+            const sameCategoryCount = Math.ceil(count * 0.6);
+            selected.push(...sameCategoryShuffled.slice(0, sameCategoryCount));
+            
+            const remainingCount = count - selected.length;
+            if (remainingCount > 0) {
+                selected.push(...complementaryShuffled.slice(0, remainingCount));
+            }
+            
+            return selected;
+        }
+
+        function getRelatedStitchesForIntent(intent, availableStitches, count) {
+            const primary = availableStitches.filter(s => s.category === intent);
+            const complementary = getComplementaryStitches(intent, availableStitches);
+            
+            const selected = [];
+            const primaryShuffled = shuffleArray(primary);
+            const complementaryShuffled = shuffleArray(complementary);
+            
+            // 70% primary, 30% complementary
+            const primaryCount = Math.ceil(count * 0.7);
+            selected.push(...primaryShuffled.slice(0, primaryCount));
+            
+            const remainingCount = count - selected.length;
+            if (remainingCount > 0) {
+                selected.push(...complementaryShuffled.slice(0, remainingCount));
+            }
+            
+            return selected;
+        }
+
+        function getComplementaryStitches(category, availableStitches) {
+            // Define which categories work well together
+            const complementaryMap = {
+                'borders': ['details', 'structural'],
+                'fill': ['borders', 'details'],
+                'details': ['borders', 'fill', '3d'],
+                'structural': ['borders', 'fill'],
+                '3d': ['details', 'fill']
             };
-
-            const classicPartners = classicCombinations[dominantStitch.name] || [];
-            const selected = [];
             
-            // First, try to get classic partners
-            for (let partnerName of classicPartners) {
-                if (selected.length >= count) break;
-                const partner = availableStitches.find(s => s.name === partnerName);
-                if (partner) {
-                    selected.push(partner);
-                    availableStitches = availableStitches.filter(s => s.name !== partnerName);
-                }
-            }
-            
-            // Fill remaining slots with similar function stitches
-            if (selected.length < count) {
-                const similarFunction = availableStitches.filter(s => s.function === dominantStitch.function);
-                const remaining = count - selected.length;
-                selected.push(...shuffleArray(similarFunction).slice(0, remaining));
-            }
-            
-            return selected;
-        }
-
-        function getSimilarStitches(dominantStitch, availableStitches, count) {
-            const sameDifficulty = shuffleArray(availableStitches.filter(s => s.difficulty === dominantStitch.difficulty));
-            const sameType = shuffleArray(availableStitches.filter(s => s.type === dominantStitch.type && s.difficulty !== dominantStitch.difficulty));
-            
-            const selected = [];
-            let sameDiffIndex = 0;
-            let sameTypeIndex = 0;
-            
-            for (let i = 0; i < count; i++) {
-                if (sameDiffIndex < sameDifficulty.length && Math.random() > 0.3) {
-                    selected.push(sameDifficulty[sameDiffIndex]);
-                    sameDiffIndex++;
-                } else if (sameTypeIndex < sameType.length) {
-                    selected.push(sameType[sameTypeIndex]);
-                    sameTypeIndex++;
-                } else if (sameDiffIndex < sameDifficulty.length) {
-                    selected.push(sameDifficulty[sameDiffIndex]);
-                    sameDiffIndex++;
-                }
-            }
-            
-            return selected;
-        }
-
-        function getProgressiveStitches(dominantStitch, availableStitches, count) {
-            const difficultyOrder = ['beginner', 'intermediate', 'advanced'];
-            const currentIndex = difficultyOrder.indexOf(dominantStitch.difficulty);
-            
-            const selected = [];
-            let nextDifficulties = [];
-            
-            // Build progression
-            for (let i = 0; i < count; i++) {
-                const targetIndex = Math.min(currentIndex + Math.floor(i / 2) + 1, difficultyOrder.length - 1);
-                const targetDifficulty = difficultyOrder[targetIndex];
-                nextDifficulties.push(targetDifficulty);
-            }
-            
-            nextDifficulties.forEach(difficulty => {
-                const candidates = availableStitches.filter(s => s.difficulty === difficulty);
-                if (candidates.length > 0) {
-                    const randomStitch = candidates[Math.floor(Math.random() * candidates.length)];
-                    selected.push(randomStitch);
-                    availableStitches = availableStitches.filter(s => s.name !== randomStitch.name);
-                }
-            });
-            
-            return selected;
+            const complementaryCategories = complementaryMap[category] || [];
+            return availableStitches.filter(s => complementaryCategories.includes(s.category));
         }
 
         function getMixedStitches(availableStitches, count) {
             return shuffleArray(availableStitches).slice(0, count);
-        }
-
-        function getTextureStitches(dominantStitch, availableStitches, count) {
-            const sameTexture = shuffleArray(availableStitches.filter(s => s.texture === dominantStitch.texture));
-            const relatedTexture = shuffleArray(availableStitches.filter(s => s.texture !== dominantStitch.texture));
-            
-            const selected = [];
-            let sameTextureIndex = 0;
-            let relatedIndex = 0;
-            
-            for (let i = 0; i < count; i++) {
-                if (sameTextureIndex < sameTexture.length && Math.random() > 0.3) {
-                    selected.push(sameTexture[sameTextureIndex]);
-                    sameTextureIndex++;
-                } else if (relatedIndex < relatedTexture.length) {
-                    selected.push(relatedTexture[relatedIndex]);
-                    relatedIndex++;
-                } else if (sameTextureIndex < sameTexture.length) {
-                    selected.push(sameTexture[sameTextureIndex]);
-                    sameTextureIndex++;
-                }
-            }
-            
-            return selected;
-        }
-
-        function getFunctionStitches(dominantStitch, availableStitches, count) {
-            const sameFunction = shuffleArray(availableStitches.filter(s => s.function === dominantStitch.function));
-            const differentFunction = shuffleArray(availableStitches.filter(s => s.function !== dominantStitch.function));
-            
-            const selected = [];
-            let sameFunctionIndex = 0;
-            let diffFunctionIndex = 0;
-            
-            for (let i = 0; i < count; i++) {
-                if (sameFunctionIndex < sameFunction.length && Math.random() > 0.2) {
-                    selected.push(sameFunction[sameFunctionIndex]);
-                    sameFunctionIndex++;
-                } else if (diffFunctionIndex < differentFunction.length) {
-                    selected.push(differentFunction[diffFunctionIndex]);
-                    diffFunctionIndex++;
-                } else if (sameFunctionIndex < sameFunction.length) {
-                    selected.push(sameFunction[sameFunctionIndex]);
-                    sameFunctionIndex++;
-                }
-            }
-            
-            return selected;
         }
 
         function shuffleArray(array) {
@@ -930,24 +1062,11 @@
             return shuffled;
         }
 
-        // Generate explanation for combinations
-        function generateCombinationExplanation(combination, theme) {
-            const explanations = {
-                'similar': `These stitches share similar difficulty levels and working techniques, creating a cohesive skill progression.`,
-                'progressive': `This combination builds complexity gradually, helping you develop skills step by step.`,
-                'mixed': `A diverse mix of stitch types and difficulties for varied texture and visual interest.`,
-                'texture': `Stitches selected for compatible visual textures that enhance each other.`,
-                'function': `These stitches serve similar purposes and work well together in embroidery projects.`,
-                'classic': `Time-tested stitch combinations that are traditionally used together in embroidery work.`
-            };
-            return explanations[theme] || 'A carefully curated combination of embroidery stitches.';
-        }
-
         // Display combination
         function displayCombination() {
             const container = document.getElementById('combinationContainer');
             const size = parseInt(document.getElementById('paletteSize').value);
-            const theme = document.getElementById('themeSelect').value;
+            const mixStyle = document.getElementById('mixStyle').value;
             
             const stitchesHtml = currentCombination.map((stitch, index) => {
                 const isLocked = lockedStitches.has(stitch.name);
@@ -955,27 +1074,33 @@
                 return `
                     <div class="palette-stitch ${isLocked ? 'locked' : ''}" 
                          onclick="toggleStitchLock('${stitch.name}')"
-                         title="Click to ${isLocked ? 'unlock' : 'lock'} • ${stitch.description}">
+                         title="Click to ${isLocked ? 'unlock' : 'lock'} • ${stitch.bestFor}">
                         ${isLocked ? '<div class="lock-icon">🔒</div>' : ''}
+                        <div class="category-icon">${stitch.icon}</div>
                         ${image}
                         <div class="stitch-overlay">
                             <div class="stitch-name">${stitch.name}</div>
-                            <div class="stitch-difficulty">${stitch.difficulty}</div>
+                            <div class="stitch-category">${categories[stitch.category].name}</div>
+                            <div class="stitch-usage">${stitch.bestFor}</div>
                         </div>
                     </div>
                 `;
             }).join('');
 
-            const explanation = generateCombinationExplanation(currentCombination, theme);
+            const combinationTitle = selectedIntent === 'custom' && dominantStitch 
+                ? `Custom combination built around "${dominantStitch.name}"`
+                : `${categories[selectedIntent]?.name || 'Mixed'} combination`;
+
+            const explanation = generateCombinationExplanation(selectedIntent, mixStyle);
 
             container.innerHTML = `
                 <div class="palette-stitches">
                     ${stitchesHtml}
                 </div>
                 <div class="palette-info">
-                    <div class="palette-name">${theme.charAt(0).toUpperCase() + theme.slice(1)} Combination (${currentCombination.length} stitches)</div>
+                    <div class="palette-name">${combinationTitle} (${currentCombination.length} stitches)</div>
                     <div class="palette-description">
-                        Built around "${dominantStitch.name}" • ${lockedStitches.size} stitch${lockedStitches.size !== 1 ? 'es' : ''} locked
+                        ${lockedStitches.size} stitch${lockedStitches.size !== 1 ? 'es' : ''} locked • ${mixStyle} mix style
                     </div>
                     <div class="palette-description" style="margin-top: 0.5rem; font-style: italic; color: #57534e;">
                         ${explanation}
@@ -998,6 +1123,28 @@
             `;
         }
 
+        function generateCombinationExplanation(intent, mixStyle) {
+            const explanations = {
+                borders: 'These stitches work beautifully for outlines, stems, and defining shapes in your embroidery.',
+                fill: 'Perfect for covering areas and creating interesting textures and patterns.',
+                details: 'Great for adding small decorative touches, flower centers, and accent details.',
+                structural: 'Ideal for edges, joining elements, and adding functional strength to your work.',
+                '3d': 'These create raised, dimensional effects that add sculptural interest.',
+                custom: 'A thoughtful combination built around your chosen stitch with complementary techniques.'
+            };
+
+            const mixExplanations = {
+                focused: 'All stitches serve the same purpose for consistent results.',
+                related: 'Stitches that work well together and complement each other.',
+                mixed: 'A diverse selection for varied texture and visual interest.'
+            };
+
+            const baseExplanation = explanations[intent] || explanations.custom;
+            const mixExplanation = mixExplanations[mixStyle] || '';
+
+            return `${baseExplanation} ${mixExplanation}`;
+        }
+
         // Stitch locking
         function toggleStitchLock(stitchName) {
             if (lockedStitches.has(stitchName)) {
@@ -1008,16 +1155,10 @@
                 showMessage(`Locked "${stitchName}"`, 'success');
             }
             
-            // Update display
             displayCombination();
         }
 
         function regenerateCombination() {
-            if (!dominantStitch) return;
-            
-            const size = parseInt(document.getElementById('paletteSize').value);
-            const theme = document.getElementById('themeSelect').value;
-
             // Keep locked stitches and regenerate the rest
             const lockedStitchObjects = [];
             lockedStitches.forEach(stitchName => {
@@ -1026,6 +1167,9 @@
                     lockedStitchObjects.push(stitchObj);
                 }
             });
+
+            const size = parseInt(document.getElementById('paletteSize').value);
+            const mixStyle = document.getElementById('mixStyle').value;
 
             // Generate new combination preserving locked stitches
             let availableStitches = [...stitchDatabase];
@@ -1040,28 +1184,34 @@
             
             // Calculate how many more stitches we need
             const remainingSlots = size - combination.length;
-            let selectedStitches = [];
 
             if (remainingSlots > 0) {
-                switch (theme) {
-                    case 'similar':
-                        selectedStitches = getSimilarStitches(dominantStitch, availableStitches, remainingSlots);
-                        break;
-                    case 'progressive':
-                        selectedStitches = getProgressiveStitches(dominantStitch, availableStitches, remainingSlots);
-                        break;
-                    case 'mixed':
-                        selectedStitches = getMixedStitches(availableStitches, remainingSlots);
-                        break;
-                    case 'texture':
-                        selectedStitches = getTextureStitches(dominantStitch, availableStitches, remainingSlots);
-                        break;
-                    case 'function':
-                        selectedStitches = getFunctionStitches(dominantStitch, availableStitches, remainingSlots);
-                        break;
-                    case 'classic':
-                        selectedStitches = getClassicStitches(dominantStitch, availableStitches, remainingSlots);
-                        break;
+                let selectedStitches = [];
+
+                if (selectedIntent === 'custom' && dominantStitch) {
+                    switch (mixStyle) {
+                        case 'focused':
+                            selectedStitches = getStitchesByCategory(dominantStitch.category, availableStitches, remainingSlots);
+                            break;
+                        case 'related':
+                            selectedStitches = getRelatedStitches(dominantStitch, availableStitches, remainingSlots);
+                            break;
+                        case 'mixed':
+                            selectedStitches = getMixedStitches(availableStitches, remainingSlots);
+                            break;
+                    }
+                } else if (selectedIntent && selectedIntent !== 'custom') {
+                    switch (mixStyle) {
+                        case 'focused':
+                            selectedStitches = getStitchesByCategory(selectedIntent, availableStitches, remainingSlots);
+                            break;
+                        case 'related':
+                            selectedStitches = getRelatedStitchesForIntent(selectedIntent, availableStitches, remainingSlots);
+                            break;
+                        case 'mixed':
+                            selectedStitches = getMixedStitches(availableStitches, remainingSlots);
+                            break;
+                    }
                 }
 
                 combination.push(...selectedStitches);
@@ -1074,7 +1224,9 @@
         }
 
         function saveCombination() {
-            const combinationText = currentCombination.map(s => `${s.name} (${s.difficulty}) - ${s.description}`).join('\n');
+            const combinationText = currentCombination.map(s => 
+                `${s.name} (${categories[s.category].name}) - ${s.bestFor}`
+            ).join('\n');
             
             navigator.clipboard.writeText(combinationText).then(() => {
                 showMessage('Combination copied to clipboard!', 'success');
@@ -1105,9 +1257,8 @@
 
         // Initialize
         document.addEventListener('DOMContentLoaded', () => {
-            // Set up initial state
-            const inputField = document.getElementById('stitchInput');
-            inputField.focus();
+            // Set focus to first intent button
+            document.querySelector('.intent-btn').focus();
         });
     </script>
 </body>
